@@ -134,8 +134,23 @@ SELECT name, email FROM users;
 -- Contar quantos usuarios existem
 SELECT COUNT(*) FROM users;
 
+-- Buscar um usuario especifico pelo email
+SELECT * FROM users WHERE email = 'teste@email.com';
+
 -- Ver a estrutura da tabela
 .schema users
+
+-- Listar todas as tabelas do banco
+.tables
+
+-- Ver informacoes da tabela (indices, etc.)
+PRAGMA table_info(users);
+
+-- Inserir um usuario manualmente (para testes)
+INSERT INTO users (name, email, password) VALUES ('Joao Silva', 'joao@teste.com', 'Senha@123');
+
+-- Apagar todos os usuarios (cuidado!)
+DELETE FROM users;
 
 -- Sair do sqlite3
 .quit
@@ -144,7 +159,14 @@ SELECT COUNT(*) FROM users;
 ### Comando direto (sem entrar no prompt)
 
 ```bash
+# Ver todos os usuarios
 sqlite3 /caminho/para/login-system/login_system.db "SELECT * FROM users;"
+
+# Ver contagem
+sqlite3 /caminho/para/login-system/login_system.db "SELECT COUNT(*) FROM users;"
+
+# Ver estrutura da tabela
+sqlite3 /caminho/para/login-system/login_system.db ".schema users"
 ```
 
 ### Interface Gráfica (DB Browser for SQLite)
@@ -158,6 +180,13 @@ QT_QPA_PLATFORM=xcb sqlitebrowser /caminho/para/login-system/login_system.db
 ```
 
 > Se der erro de Wayland, force o backend X11 com `QT_QPA_PLATFORM=xcb` antes do comando.
+
+### Exemplo de saida esperada
+
+```
+sqlite> SELECT * FROM users;
+1|Joao Silva|joao@teste.com|Senha@123
+2|Maria Souza|maria@teste.com|Minha@Senha1
 
 ---
 
