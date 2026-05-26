@@ -187,6 +187,7 @@ QT_QPA_PLATFORM=xcb sqlitebrowser /caminho/para/login-system/login_system.db
 sqlite> SELECT * FROM users;
 1|Joao Silva|joao@teste.com|Senha@123
 2|Maria Souza|maria@teste.com|Minha@Senha1
+```
 
 ---
 
