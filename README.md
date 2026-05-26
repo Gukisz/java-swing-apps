@@ -1,32 +1,92 @@
 # Java Swing Apps
 
-Repositório de estudos com aplicações desktop em **Java Swing**, criadas com foco em aprendizado de interfaces gráficas, componentes visuais customizados e integração com banco de dados.
+Collection of Java Swing desktop applications built for learning GUI development, custom visual components, and database integration.
 
 ---
 
-## Projetos Disponíveis
+## Projects
 
-| Projeto | Descrição | Destaques |
-|---------|-----------|-----------|
-| [login-system](login-system/) | Sistema de Login & Cadastro com SQLite | Tema escuro, CardLayout, banco de dados embutido, validações |
-| [calculator](calculator/) | Calculadora visual estilizada | Design rosa pastel, operações básicas, display customizado |
-| [dialogs](dialogs/) | Demonstração de diálogos Swing | Erro, aviso e confirmação, tema dark |
+### [login-system](login-system/)
+
+Login & Registration System with SQLite database.
+
+**Features:**
+- User registration with name, email and password validation
+- User authentication against SQLite database
+- Dark theme with black background and white text
+- Ghost text placeholders in input fields
+- Circular avatar photo (with drawn fallback)
+- CardLayout navigation between login and register screens
+
+**Tech:** Java Swing, SQLite (embedded), JDBC, SLF4J
+
+**Run:**
+```bash
+cd login-system
+chmod +x run.sh
+./run.sh
+```
+
+> See [login-system/README.md](login-system/README.md) for full details.
 
 ---
 
-## Estrutura do Repositório
+### [calculator](calculator/)
+
+Pink pastel themed calculator with custom display and styled buttons.
+
+**Features:**
+- Basic operations: add, subtract, multiply, divide
+- Helper functions: percentage (`%`), sign toggle (`±`), backspace (`←`), clear (`C`)
+- Large custom display with right alignment
+- Color-coded buttons by type
+
+**Tech:** Java Swing, GridLayout
+
+**Run:**
+```bash
+cd calculator
+javac Main.java
+java Main
+```
+
+---
+
+### [dialogs](dialogs/)
+
+Quick dialog demonstrations with dark theme.
+
+**Features:**
+- Error message dialog
+- Warning message dialog
+- Yes/No confirmation dialog
+- Dark themed buttons with hover effect
+
+**Tech:** Java Swing, JOptionPane, GridBagLayout
+
+**Run:**
+```bash
+cd dialogs
+javac DialogApp.java
+java DialogApp
+```
+
+---
+
+## Repository Structure
 
 ```
 java-swing-apps/
-├── assets/                 # Recursos visuais compartilhados (ícones, imagens)
+├── assets/                 # Shared visual resources (icons, images)
 ├── calculator/
-│   └── Main.java           # Calculadora com design rosa
+│   ├── Main.java           # Pink calculator
+│   └── README.md           # Calculator docs
 ├── dialogs/
-│   └── DialogApp.java      # Exemplos de JOptionPane
+│   └── DialogApp.java      # JOptionPane examples
 ├── login-system/
-│   ├── MainApp.java        # JFrame principal
-│   ├── LoginPanel.java     # Tela de login
-│   ├── RegisterPanel.java  # Tela de cadastro
+│   ├── MainApp.java        # Main JFrame
+│   ├── LoginPanel.java     # Login screen
+│   ├── RegisterPanel.java  # Registration screen
 │   ├── DatabaseConnection.java
 │   ├── DatabaseSetup.java
 │   ├── UserDAO.java
@@ -34,74 +94,32 @@ java-swing-apps/
 │   ├── UIUtils.java
 │   ├── ValidationUtils.java
 │   ├── GhostText.java
-│   ├── run.sh              # Script de execução
-│   ├── sqlite-jdbc.jar     # Driver SQLite
-│   ├── slf4j-api.jar       # Dependência de logging
-│   ├── slf4j-simple.jar    # Implementação de logging
-│   └── README.md           # Documentação detalhada
-└── README.md               # Este arquivo
+│   ├── run.sh              # Run script
+│   ├── sqlite-jdbc.jar     # SQLite JDBC driver
+│   ├── slf4j-api.jar       # Logging API
+│   ├── slf4j-simple.jar    # Logging implementation
+│   └── README.md           # Full documentation
+└── README.md               # This file
 ```
 
 ---
 
-## Requisitos Gerais
+## General Requirements
 
-- **Java JDK 8+** (JDK 17 ou superior recomendado)
-- Para o `login-system`, não é necessário instalar banco de dados — o SQLite é embutido.
-
----
-
-## Como Executar
-
-### Calculadora
-
-```bash
-cd calculator
-javac Main.java
-java Main
-```
-
-### Diálogos
-
-```bash
-cd dialogs
-javac DialogApp.java
-java DialogApp
-```
-
-### Login System
-
-Veja as instruções completas em [login-system/README.md](login-system/README.md).
-
-Resumido:
-
-```bash
-cd login-system
-javac -cp ".:sqlite-jdbc.jar:slf4j-api.jar:slf4j-simple.jar" *.java
-java -cp ".:sqlite-jdbc.jar:slf4j-api.jar:slf4j-simple.jar" MainApp
-```
-
-Ou use o script:
-
-```bash
-cd login-system
-chmod +x run.sh
-./run.sh
-```
-
-> **Windows**: troque `:` por `;` nos comandos de classpath.
+- Java JDK 8 or higher (JDK 17+ recommended)
+- No database installation needed for `login-system` — SQLite is embedded
 
 ---
 
-## Tecnologias Utilizadas
+## Technologies Used
 
 - Java Swing (GUI)
-- CardLayout (navegação entre telas)
-- SQLite + JDBC (persistência)
+- CardLayout (screen navigation)
+- SQLite + JDBC (persistence)
 - SLF4J (logging)
 
 ---
 
-## Licença
+## License
 
-Projeto livre para estudo e modificação.
+Free for study and modification.
