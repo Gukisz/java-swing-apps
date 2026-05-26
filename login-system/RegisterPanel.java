@@ -5,12 +5,14 @@ import java.awt.event.ComponentEvent;
 
 public class RegisterPanel extends JPanel {
     private MainApp mainApp;
+    private UserDAO userDAO;
     private JTextField nameField, emailField;
     private JPasswordField passwordField, confirmPasswordField;
     private GhostText nameGhost, emailGhost, passwordGhost, confirmGhost;
 
     public RegisterPanel(MainApp mainApp) {
         this.mainApp = mainApp;
+        this.userDAO = new UserDAO();
         setLayout(new GridBagLayout());
         setBackground(Color.BLACK);
         setFocusable(true);
@@ -101,12 +103,20 @@ public class RegisterPanel extends JPanel {
                 "A senha deve ter pelo menos 8 caracteres e um caractere especial.")) {
         } else if (ValidationUtils.showErrorIf(this, !pass.equals(confirmPass),
                 "As senhas não coincidem.")) {
+        } else if (ValidationUtils.showErrorIf(this, userDAO.emailExists(email),
+                "Este e-mail já está cadastrado.")) {
         } else {
-            // passou em todas as validacoes, "cria" a conta
-            JOptionPane.showMessageDialog(this, "Conta criada com sucesso para: " + name, "Sucesso",
-                    JOptionPane.INFORMATION_MESSAGE);
-            clearFields();
-            mainApp.showLogin();
+            // passou em todas as validacoes, salva no banco
+            User newUser = new User(name, email, pass);
+            if (userDAO.insert(newUser)) {
+                JOptionPane.showMessageDialog(this, "Conta criada com sucesso para: " + name, "Sucesso",
+                        JOptionPane.INFORMATION_MESSAGE);
+                clearFields();
+                mainApp.showLogin();
+            } else {
+                JOptionPane.showMessageDialog(this, "Erro ao salvar no banco de dados. Tente novamente.", "Erro",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 

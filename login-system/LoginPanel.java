@@ -9,12 +9,14 @@ import javax.imageio.ImageIO;
 
 public class LoginPanel extends JPanel {
     private MainApp mainApp;
+    private UserDAO userDAO;
     private JTextField emailField;
     private JPasswordField passwordField;
     private GhostText emailGhost, passwordGhost;
 
     public LoginPanel(MainApp mainApp) {
         this.mainApp = mainApp;
+        this.userDAO = new UserDAO();
         setLayout(new BorderLayout());
         setBackground(Color.BLACK);
 
@@ -96,6 +98,10 @@ public class LoginPanel extends JPanel {
         BufferedImage photo = null;
         try {
             File imgFile = new File("assets/usericon.png");
+            if (!imgFile.exists()) {
+                // Tenta no diretório pai caso esteja rodando de dentro de login-system
+                imgFile = new File("../assets/usericon.png");
+            }
             if (imgFile.exists()) {
                 photo = ImageIO.read(imgFile);
             }
@@ -120,6 +126,10 @@ public class LoginPanel extends JPanel {
                 g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
                 int center = Math.min(getWidth(), getHeight()) - 10;
+                if (center <= 0) {
+                    g2d.dispose();
+                    return;
+                }
                 int x = (getWidth() - center) / 2;
                 int y = (getHeight() - center) / 2;
 
@@ -143,7 +153,7 @@ public class LoginPanel extends JPanel {
         return panel;
     }
 
-    // valida os dados e mostra mensagem de erro ou sucesso
+    // valida os dados e autentica no banco
     private void handleLogin() {
         String email = emailField.getText();
         String password = new String(passwordField.getPassword());
@@ -154,13 +164,19 @@ public class LoginPanel extends JPanel {
         } else if (!ValidationUtils.isValidEmail(email)) {
             JOptionPane.showMessageDialog(this, "E-mail inválido. Certifique-se de usar '@' e um domínio.", "Erro",
                     JOptionPane.ERROR_MESSAGE);
-        } else if (!ValidationUtils.isValidPassword(password)) {
-            JOptionPane.showMessageDialog(this, "A senha deve ter pelo menos 8 caracteres e um caractere especial.",
-                    "Erro", JOptionPane.ERROR_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(this, "Login realizado como: " + email, "Sucesso",
-                    JOptionPane.INFORMATION_MESSAGE);
-            clearFields();
+            User user = userDAO.findByEmail(email);
+            if (user == null) {
+                JOptionPane.showMessageDialog(this, "E-mail não encontrado. Crie uma conta primeiro.", "Erro",
+                        JOptionPane.ERROR_MESSAGE);
+            } else if (!user.getPassword().equals(password)) {
+                JOptionPane.showMessageDialog(this, "Senha incorreta.", "Erro",
+                        JOptionPane.ERROR_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Bem-vindo, " + user.getName() + "!", "Sucesso",
+                        JOptionPane.INFORMATION_MESSAGE);
+                clearFields();
+            }
         }
     }
 

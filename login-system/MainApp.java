@@ -10,7 +10,7 @@ public class MainApp extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 600);
         setLocationRelativeTo(null);
-        setResizable(false);
+        setResizable(true);
         // fundo preto pra dar aquele contraste
         getContentPane().setBackground(Color.BLACK);
 
@@ -43,11 +43,14 @@ public class MainApp extends JFrame {
 
     public static void main(String[] args) {
         try {
-            // tenta pegar o visual padrão do sistema
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            // Usa o visual multiplataforma (Metal) para evitar que o tema do sistema (como GTK no Linux) force tela branca e ignore o fundo preto
+            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        // cria a tabela de usuarios se nao existir ainda
+        DatabaseSetup.init();
 
         // roda a interface na thread certa do swing
         SwingUtilities.invokeLater(() -> {
