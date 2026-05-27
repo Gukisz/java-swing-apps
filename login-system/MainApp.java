@@ -9,6 +9,7 @@ public class MainApp extends JFrame {
         setTitle("Login & Cadastro");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(400, 600);
+        setMinimumSize(new Dimension(360, 520));
         setLocationRelativeTo(null);
         setResizable(true);
         // fundo preto pra dar aquele contraste

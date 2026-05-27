@@ -39,7 +39,7 @@ public class LoginPanel extends JPanel {
         formPanel.add(Box.createHorizontalGlue(), gbc);
 
         gbc.gridx = 1;
-        gbc.weightx = 0;
+        gbc.weightx = 1.0;
         gbc.insets = new Insets(8, 0, 8, 0);
 
         // titulo da tela
@@ -110,11 +110,14 @@ public class LoginPanel extends JPanel {
         }
 
         final BufferedImage finalPhoto = photo;
-        final int displaySize = 150;
-
         JPanel panel = new JPanel() {
             @Override
             public Dimension getPreferredSize() {
+                Container parent = getParent();
+                int displaySize = 150;
+                if (parent != null) {
+                    displaySize = Math.min(150, Math.max(80, parent.getWidth() / 3));
+                }
                 return new Dimension(displaySize + 20, displaySize + 20);
             }
 

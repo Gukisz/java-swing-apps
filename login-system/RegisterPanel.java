@@ -27,7 +27,7 @@ public class RegisterPanel extends JPanel {
         add(Box.createHorizontalGlue(), gbc);
 
         gbc.gridx = 1;
-        gbc.weightx = 0;
+        gbc.weightx = 1.0;
         gbc.insets = new Insets(8, 0, 8, 0);
 
         // titulo da tela de cadastro
