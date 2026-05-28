@@ -1,6 +1,6 @@
-# Login System - Java Swing + SQLite
+# Sistema de Gestão de Serviços - Java Swing + SQLite
 
-Sistema de login e cadastro com interface gráfica em Java Swing e banco de dados SQLite embutido.
+Sistema de gestão de serviços com interface gráfica em Java Swing e banco de dados SQLite embutido. Possui tela de login/cadastro e, após autenticação, um desktop profissional com barra de menu, toolbar e janelas internas (MDI).
 
 ---
 
@@ -8,27 +8,37 @@ Sistema de login e cadastro com interface gráfica em Java Swing e banco de dado
 
 ```
 login-system/
-├── MainApp.java              # JFrame principal com CardLayout
-├── LoginPanel.java           # Tela de login
-├── RegisterPanel.java        # Tela de cadastro
-├── UIUtils.java              # Estilização de componentes visuais
-├── ValidationUtils.java      # Regras de validação de formulário
-├── GhostText.java            # Placeholder/Hint text para campos
-├── DatabaseConnection.java   # Conexão com SQLite
-├── DatabaseSetup.java        # Criação automática da tabela
-├── User.java                 # Modelo de usuário (POJO)
-├── UserDAO.java              # Operações no banco (inserir, buscar)
-├── sqlite-jdbc.jar           # Driver JDBC do SQLite (já incluído)
-├── slf4j-api.jar             # Dependência de logging (já incluído)
-├── slf4j-simple.jar          # Implementação simples de logging (já incluído)
-├── login_system.db           # Banco de dados gerado automaticamente
-└── run.sh                    # Script para compilar e executar
+├── MainApp.java                    # JFrame principal com CardLayout (login/cadastro)
+├── LoginPanel.java                 # Tela de login
+├── RegisterPanel.java              # Tela de cadastro
+├── ServiceManagementFrame.java     # Desktop principal com menu, toolbar e JDesktopPane
+├── ClientInternalFrame.java        # Tela interna de Cadastro de Clientes
+├── ServiceOrderInternalFrame.java  # Tela interna de Ordem de Serviço
+├── DarkDialog.java                 # Dialogs customizados com tema escuro
+├── IconUtils.java                  # Carregador de ícones dos assets
+├── UIUtils.java                    # Estilização de componentes visuais
+├── ValidationUtils.java            # Regras de validação de formulário
+├── GhostText.java                  # Placeholder/Hint text para campos
+├── DatabaseConnection.java         # Conexão com SQLite
+├── DatabaseSetup.java              # Criação automática das tabelas
+├── User.java                       # Modelo de usuário
+├── UserDAO.java                    # Operações no banco de usuários
+├── Client.java                     # Modelo de cliente
+├── ClientDAO.java                  # Operações no banco de clientes
+├── ServiceOrder.java               # Modelo de ordem de serviço
+├── ServiceOrderDAO.java            # Operações no banco de OS
+├── sqlite-jdbc.jar                 # Driver JDBC do SQLite
+├── slf4j-api.jar                   # Dependência de logging
+├── slf4j-simple.jar                # Implementação simples de logging
+├── login_system.db                 # Banco de dados gerado automaticamente
+└── run.sh                          # Script para compilar e executar
 ```
 
 ---
 
 ## Funcionalidades
 
+### Autenticação
 - **Cadastro de Usuários**: Valida nome, e-mail e senha; salva no banco SQLite
 - **Login**: Autentica usuário consultando o banco de dados
 - **Validações**:
@@ -36,9 +46,36 @@ login-system/
   - Senha: mínimo 8 caracteres e 1 caractere especial
   - Nome: mínimo 3 caracteres
   - Confirmação de senha deve ser igual à senha
-- **Tema Escuro**: Fundo preto, campos cinza escuro, texto branco
-- **Ghost Text**: Placeholders que desaparecem ao digitar
-- **Foto Circular**: Avatar no topo da tela de login (com fallback desenhado)
+
+### Desktop Principal (MDI)
+Após o login, o sistema abre um desktop maximizado com:
+- **Barra de Menu**: Cadastro, Movimento, Relatório, Utilitário, Sobre, Ajuda
+- **Toolbar**: Atalhos rápidos para Clientes, Serviços e Ordem de Serviço
+- **JDesktopPane**: Área de trabalho para janelas internas
+- **Menu de Contexto (Popup)**: Acesso rápido no desktop
+
+### Cadastro de Clientes
+- Formulário completo: Nome, Telefone, E-mail, Endereço
+- Tabela com todos os clientes cadastrados
+- Busca por nome em tempo real
+- Ações: Novo, Salvar, Atualizar, Excluir
+
+### Ordem de Serviço (OS)
+- Vinculação com cliente via combo box
+- Campos: Equipamento, Defeito, Serviço, Técnico, Valor, Status
+- Status disponíveis: Aberta, Em andamento, Finalizada, Cancelada
+- Tabela com todas as ordens de serviço
+- Ações: Novo, Salvar, Atualizar, Excluir
+
+### Utilitários
+- **Calculadora**: Abre a calculadora do sistema operacional
+- **Bloco de Notas**: Abre o editor de texto do sistema operacional
+
+### Tema Escuro
+- Fundo preto, campos cinza escuro, texto branco em toda a aplicação
+- **Dialogs Customizados**: Popups modernos escuros substituindo o JOptionPane padrão
+- Ghost Text: Placeholders que desaparecem ao digitar
+- Foto Circular: Avatar no topo da tela de login (com fallback desenhado)
 
 ---
 
@@ -96,9 +133,9 @@ O projeto usa **SQLite embutido**, igual ao Java DB do NetBeans:
 
 - **Sem servidor**, sem instalação
 - O arquivo `login_system.db` é criado automaticamente na mesma pasta
-- A tabela `users` é criada automaticamente ao iniciar o app (`DatabaseSetup.init()`)
+- As tabelas `users`, `clients` e `service_orders` são criadas automaticamente ao iniciar o app (`DatabaseSetup.init()`)
 
-### Estrutura da Tabela
+### Estrutura das Tabelas
 
 ```sql
 CREATE TABLE users (
@@ -106,6 +143,26 @@ CREATE TABLE users (
     name TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL
+);
+
+CREATE TABLE clients (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    phone TEXT,
+    email TEXT,
+    address TEXT
+);
+
+CREATE TABLE service_orders (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    client_id INTEGER NOT NULL,
+    equipment TEXT NOT NULL,
+    defect TEXT,
+    service TEXT,
+    technician TEXT,
+    value REAL,
+    status TEXT NOT NULL DEFAULT 'Aberta',
+    FOREIGN KEY(client_id) REFERENCES clients(id)
 );
 ```
 
@@ -122,71 +179,26 @@ cd /caminho/para/login-system
 sqlite3 login_system.db
 ```
 
-Dentro do prompt do SQLite, use estes comandos para verificar o banco:
+Dentro do prompt do SQLite:
 
 ```sql
 -- Ver todos os usuarios cadastrados
 SELECT * FROM users;
 
--- Ver apenas nome e email
-SELECT name, email FROM users;
+-- Ver todos os clientes
+SELECT * FROM clients;
 
--- Contar quantos usuarios existem
-SELECT COUNT(*) FROM users;
+-- Ver todas as ordens de servico
+SELECT * FROM service_orders;
 
--- Buscar um usuario especifico pelo email
-SELECT * FROM users WHERE email = 'teste@email.com';
+-- Ver estrutura de todas as tabelas
+.schema
 
--- Ver a estrutura da tabela
-.schema users
-
--- Listar todas as tabelas do banco
+-- Listar todas as tabelas
 .tables
-
--- Ver informacoes da tabela (indices, etc.)
-PRAGMA table_info(users);
-
--- Inserir um usuario manualmente (para testes)
-INSERT INTO users (name, email, password) VALUES ('Joao Silva', 'joao@teste.com', 'Senha@123');
-
--- Apagar todos os usuarios (cuidado!)
-DELETE FROM users;
 
 -- Sair do sqlite3
 .quit
-```
-
-### Comando direto (sem entrar no prompt)
-
-```bash
-# Ver todos os usuarios
-sqlite3 /caminho/para/login-system/login_system.db "SELECT * FROM users;"
-
-# Ver contagem
-sqlite3 /caminho/para/login-system/login_system.db "SELECT COUNT(*) FROM users;"
-
-# Ver estrutura da tabela
-sqlite3 /caminho/para/login-system/login_system.db ".schema users"
-```
-
-### Interface Gráfica (DB Browser for SQLite)
-
-```bash
-# Instalar (Linux)
-sudo apt install sqlitebrowser
-
-# Abrir o banco
-QT_QPA_PLATFORM=xcb sqlitebrowser /caminho/para/login-system/login_system.db
-```
-
-> Se der erro de Wayland, force o backend X11 com `QT_QPA_PLATFORM=xcb` antes do comando.
-
-### Exemplo de saida esperada
-
-```
-sqlite> SELECT * FROM users;
-1|Joao Silva|joao@teste.com|Senha@123
-2|Maria Souza|maria@teste.com|Minha@Senha1
 ```
 
 ---
@@ -196,20 +208,27 @@ sqlite> SELECT * FROM users;
 ```
 MainApp (JFrame)
 ├── CardLayout
-│   ├── LoginPanel  → UserDAO → SQLite (login_system.db)
-│   └── RegisterPanel → UserDAO → SQLite (login_system.db)
+│   ├── LoginPanel  → UserDAO → SQLite
+│   └── RegisterPanel → UserDAO → SQLite
+│
+└── ServiceManagementFrame (JFrame - após login)
+    ├── JMenuBar (Cadastro, Movimento, Relatório, Utilitário, Sobre, Ajuda)
+    ├── JToolBar (Clientes, Serviços, OS)
+    └── JDesktopPane
+        ├── ClientInternalFrame → ClientDAO → SQLite
+        └── ServiceOrderInternalFrame → ServiceOrderDAO → SQLite
 ```
 
-- **UserDAO**: Camada de acesso a dados com PreparedStatement
+- **UserDAO / ClientDAO / ServiceOrderDAO**: Camada de acesso a dados com PreparedStatement
 - **DatabaseConnection**: Factory de conexões JDBC
-- **DatabaseSetup**: Cria a tabela automaticamente se não existir
+- **DatabaseSetup**: Cria as tabelas automaticamente se não existirem
 
 ---
 
 ## Observações
 
 - A senha é salva em texto plano por simplicidade (recomenda-se usar hashing como BCrypt em produção)
-- Para usar no NetBeans: crie um novo projeto Java, copie os arquivos `.java` para `src/`, e adicione `sqlite-jdbc.jar`, `slf4j-api.jar` e `slf4j-simple.jar` em **Libraries** (clique direito em Libraries → Add JAR/Folder)
+- Para usar no NetBeans: crie um novo projeto Java, copie os arquivos `.java` para `src/`, e adicione `sqlite-jdbc.jar`, `slf4j-api.jar` e `slf4j-simple.jar` em **Libraries**
 - Para limpar os dados, basta apagar o arquivo `login_system.db`
 
 ---

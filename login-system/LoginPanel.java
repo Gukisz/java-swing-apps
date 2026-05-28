@@ -81,8 +81,7 @@ public class LoginPanel extends JPanel {
         loginButton.addActionListener(e -> handleLogin());
         signupButton.addActionListener(e -> mainApp.showRegister());
         forgotBtn.addActionListener(e ->
-                JOptionPane.showMessageDialog(this, "Funcionalidade de recuperação de senha em breve.", "Informação",
-                        JOptionPane.INFORMATION_MESSAGE));
+                DarkDialog.showInfo(this, "Informação", "Funcionalidade de recuperação de senha em breve."));
 
         // quando a tela aparece, limpa os campos
         addComponentListener(new ComponentAdapter() {
@@ -162,23 +161,29 @@ public class LoginPanel extends JPanel {
         String password = new String(passwordField.getPassword());
 
         if (emailGhost.isShowingGhost() || passwordGhost.isShowingGhost()) {
-            JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos.", "Erro",
-                    JOptionPane.ERROR_MESSAGE);
+            DarkDialog.showError(this, "Erro", "Por favor, preencha todos os campos.");
         } else if (!ValidationUtils.isValidEmail(email)) {
-            JOptionPane.showMessageDialog(this, "E-mail inválido. Certifique-se de usar '@' e um domínio.", "Erro",
-                    JOptionPane.ERROR_MESSAGE);
+            DarkDialog.showError(this, "Erro", "E-mail inválido. Certifique-se de usar '@' e um domínio.");
         } else {
             User user = userDAO.findByEmail(email);
             if (user == null) {
-                JOptionPane.showMessageDialog(this, "E-mail não encontrado. Crie uma conta primeiro.", "Erro",
-                        JOptionPane.ERROR_MESSAGE);
+                DarkDialog.showError(this, "Erro", "E-mail não encontrado. Crie uma conta primeiro.");
             } else if (!user.getPassword().equals(password)) {
-                JOptionPane.showMessageDialog(this, "Senha incorreta.", "Erro",
-                        JOptionPane.ERROR_MESSAGE);
+                DarkDialog.showError(this, "Erro", "Senha incorreta.");
             } else {
-                JOptionPane.showMessageDialog(this, "Bem-vindo, " + user.getName() + "!", "Sucesso",
-                        JOptionPane.INFORMATION_MESSAGE);
+                DarkDialog.showInfo(this, "Sucesso", "Bem-vindo, " + user.getName() + "!");
                 clearFields();
+
+                // abre a tela principal do sistema de gestao
+                SwingUtilities.invokeLater(() -> {
+                    new ServiceManagementFrame().setVisible(true);
+                });
+
+                // fecha a janela de login
+                Window loginWindow = SwingUtilities.getWindowAncestor(this);
+                if (loginWindow != null) {
+                    loginWindow.dispose();
+                }
             }
         }
     }

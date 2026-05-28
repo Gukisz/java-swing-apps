@@ -1,5 +1,4 @@
 import java.awt.Component;
-import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
@@ -35,7 +34,7 @@ public class ValidationUtils {
     // mostra um popup de erro se a condicao for verdadeira, retorna true/false
     public static boolean showErrorIf(Component parent, boolean condition, String message) {
         if (condition) {
-            JOptionPane.showMessageDialog(parent, message, "Erro", JOptionPane.ERROR_MESSAGE);
+            DarkDialog.showError(parent, "Erro", message);
             return true;
         }
         return false;

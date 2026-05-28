@@ -9,16 +9,38 @@ public class DatabaseSetup {
     }
 
     public static void init() {
-        String sql = "CREATE TABLE IF NOT EXISTS users ("
+        String usersSql = "CREATE TABLE IF NOT EXISTS users ("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + "name TEXT NOT NULL,"
                 + "email TEXT NOT NULL UNIQUE,"
                 + "password TEXT NOT NULL"
                 + ");";
 
+        String clientsSql = "CREATE TABLE IF NOT EXISTS clients ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "name TEXT NOT NULL,"
+                + "phone TEXT,"
+                + "email TEXT,"
+                + "address TEXT"
+                + ");";
+
+        String ordersSql = "CREATE TABLE IF NOT EXISTS service_orders ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "client_id INTEGER NOT NULL,"
+                + "equipment TEXT NOT NULL,"
+                + "defect TEXT,"
+                + "service TEXT,"
+                + "technician TEXT,"
+                + "value REAL,"
+                + "status TEXT NOT NULL DEFAULT 'Aberta',"
+                + "FOREIGN KEY(client_id) REFERENCES clients(id)"
+                + ");";
+
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
+            stmt.execute(usersSql);
+            stmt.execute(clientsSql);
+            stmt.execute(ordersSql);
             System.out.println("Banco de dados inicializado com sucesso.");
         } catch (Exception e) {
             System.err.println("Erro ao inicializar banco: " + e.getMessage());

@@ -93,8 +93,7 @@ public class RegisterPanel extends JPanel {
         // verifica se tem campos vazios antes de qualquer coisa
         if (nameGhost.isShowingGhost() || emailGhost.isShowingGhost()
                 || passwordGhost.isShowingGhost() || confirmGhost.isShowingGhost()) {
-            JOptionPane.showMessageDialog(this, "Preencha todos os campos obrigatórios.", "Erro",
-                    JOptionPane.ERROR_MESSAGE);
+            DarkDialog.showError(this, "Erro", "Preencha todos os campos obrigatórios.");
         } else if (ValidationUtils.showErrorIf(this, name.length() < 3,
                 "O nome deve ter pelo menos 3 caracteres.")) {
         } else if (ValidationUtils.showErrorIf(this, !ValidationUtils.isValidEmail(email),
@@ -109,13 +108,11 @@ public class RegisterPanel extends JPanel {
             // passou em todas as validacoes, salva no banco
             User newUser = new User(name, email, pass);
             if (userDAO.insert(newUser)) {
-                JOptionPane.showMessageDialog(this, "Conta criada com sucesso para: " + name, "Sucesso",
-                        JOptionPane.INFORMATION_MESSAGE);
+                DarkDialog.showInfo(this, "Sucesso", "Conta criada com sucesso para: " + name);
                 clearFields();
                 mainApp.showLogin();
             } else {
-                JOptionPane.showMessageDialog(this, "Erro ao salvar no banco de dados. Tente novamente.", "Erro",
-                        JOptionPane.ERROR_MESSAGE);
+                DarkDialog.showError(this, "Erro", "Erro ao salvar no banco de dados. Tente novamente.");
             }
         }
     }
