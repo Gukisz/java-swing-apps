@@ -13,7 +13,7 @@
 
 ## Sobre
 
-Repositório de estudos com aplicações desktop desenvolvidas em **Java Swing**, criadas com foco em aprendizado de interfaces gráficas, componentes visuais customizados e integração com banco de dados. Cada projeto demonstra conceitos diferentes: desde uma calculadora visual com tema colorido até um sistema completo de login e cadastro com persistência em SQLite.
+Repositório de estudos com aplicações desktop desenvolvidas em **Java Swing**, criadas com foco em aprendizado de interfaces gráficas, componentes visuais customizados e integração com banco de dados. Cada projeto demonstra conceitos diferentes: desde uma calculadora visual com tema colorido até um sistema completo de gestão de serviços com persistência em SQLite.
 
 ---
 
@@ -21,7 +21,7 @@ Repositório de estudos com aplicações desktop desenvolvidas em **Java Swing**
 
 | Projeto | Pasta | Descrição | Destaques |
 |---------|-------|-----------|-----------|
-| **Login System** | [`login-system/`](login-system/) | Sistema de Login & Cadastro com SQLite | Tema escuro, CardLayout, banco de dados embutido, validações |
+| **Service Management System** | [`login-system/`](login-system/) | Sistema de Gestão de Serviços com SQLite | Login, desktop MDI, CRUD de clientes e ordens de serviço, tema escuro |
 | **Calculator** | [`calculator/`](calculator/) | Calculadora visual estilizada | Design rosa pastel, operações básicas, display customizado |
 | **Dialogs** | [`dialogs/`](dialogs/) | Demonstração de diálogos Swing | Erro, aviso e confirmação, tema dark |
 
@@ -29,7 +29,7 @@ Repositório de estudos com aplicações desktop desenvolvidas em **Java Swing**
 
 ## ✨ Funcionalidades por Projeto
 
-### Login System
+### Service Management System
 
 #### Autenticação e Cadastro
 - **Tela de Login**: Valida e-mail e senha consultando o banco SQLite
@@ -38,8 +38,33 @@ Repositório de estudos com aplicações desktop desenvolvidas em **Java Swing**
 - **E-mail único**: impede cadastro duplicado no banco
 - **Navegação**: troca entre login e cadastro via `CardLayout`
 
+#### Desktop Principal (MDI)
+Após o login, o sistema abre um desktop maximizado com:
+- **Barra de Menu**: Cadastro, Movimento, Relatório, Utilitário, Sobre, Ajuda
+- **Toolbar**: Atalhos rápidos para Clientes, Serviços e Ordem de Serviço com ícones
+- **JDesktopPane**: Área de trabalho para janelas internas (MDI)
+- **Menu de Contexto (Popup)**: Acesso rápido no desktop com botão direito
+
+#### Cadastro de Clientes
+- **Formulário completo**: Nome, Telefone, E-mail, Endereço
+- **Tabela escura** listando todos os clientes cadastrados
+- **Busca em tempo real** por nome
+- **CRUD completo**: Novo, Salvar, Atualizar, Excluir (com confirmação)
+
+#### Ordem de Serviço (OS)
+- **Vinculação com cliente** via combo box
+- **Campos**: Equipamento, Defeito, Serviço, Técnico, Valor (R$), Status
+- **Status**: Aberta, Em andamento, Finalizada, Cancelada
+- **Tabela escura** com todas as ordens de serviço
+- **CRUD completo**: Novo, Salvar, Atualizar, Excluir
+
+#### Utilitários
+- **Calculadora**: Abre a calculadora do sistema operacional
+- **Bloco de Notas**: Abre o editor de texto do sistema operacional
+
 #### Design e UX
 - **Tema escuro**: fundo preto (`#000000`), campos cinza escuro (`#1E1E1E`), texto branco
+- **Dialogs Customizados**: Popups modernos escuros (`DarkDialog`) substituindo o `JOptionPane` padrão
 - **Ghost Text**: placeholders que aparecem e somem automaticamente nos campos
 - **Foto circular**: avatar no topo da tela de login (com fallback desenhado se a imagem não existir)
 - **Botões com hover**: fundo clareia ao passar o mouse
@@ -47,8 +72,8 @@ Repositório de estudos com aplicações desktop desenvolvidas em **Java Swing**
 
 #### Banco de Dados
 - **SQLite embutido**: sem servidor, arquivo `.db` gerado automaticamente na pasta do projeto
-- **Tabela `users`**: `id`, `name`, `email` (único), `password`
-- **DAO simples**: operações de inserir e buscar por e-mail com `PreparedStatement`
+- **Tabelas**: `users`, `clients`, `service_orders` (com chave estrangeira)
+- **DAOs**: operações de CRUD com `PreparedStatement`
 - **Consulta em tempo real**: acesso ao banco via `sqlite3` ou DB Browser
 
 ### Calculator
@@ -128,7 +153,8 @@ Repositório de estudos com aplicações desktop desenvolvidas em **Java Swing**
 ```
 java-swing-apps/
 ├── assets/
-│   └── usericon.png           # Ícone de usuário para o login system
+│   ├── Icones/                # Ícones para o sistema de gestão
+│   └── usericon.png           # Ícone de usuário para o login
 ├── calculator/
 │   ├── Main.java              # Calculadora com design rosa pastel
 │   └── README.md              # Documentação da calculadora
@@ -138,10 +164,19 @@ java-swing-apps/
 │   ├── MainApp.java           # JFrame principal com CardLayout
 │   ├── LoginPanel.java        # Tela de login com foto e validações
 │   ├── RegisterPanel.java     # Tela de cadastro com validações
+│   ├── ServiceManagementFrame.java  # Desktop principal com menu e toolbar
+│   ├── ClientInternalFrame.java     # Tela interna de cadastro de clientes
+│   ├── ServiceOrderInternalFrame.java # Tela interna de ordem de serviço
+│   ├── DarkDialog.java        # Dialogs customizados com tema escuro
+│   ├── IconUtils.java         # Carregador de ícones dos assets
 │   ├── DatabaseConnection.java # Conexão com SQLite
-│   ├── DatabaseSetup.java     # Criação automática da tabela
-│   ├── UserDAO.java           # Operações no banco (inserir, buscar)
+│   ├── DatabaseSetup.java     # Criação automática das tabelas
+│   ├── UserDAO.java           # Operações no banco de usuários
+│   ├── ClientDAO.java         # Operações no banco de clientes
+│   ├── ServiceOrderDAO.java   # Operações no banco de ordens de serviço
 │   ├── User.java              # Modelo de usuário (POJO)
+│   ├── Client.java            # Modelo de cliente (POJO)
+│   ├── ServiceOrder.java      # Modelo de ordem de serviço (POJO)
 │   ├── UIUtils.java           # Estilização de componentes visuais
 │   ├── ValidationUtils.java   # Regras de validação de formulário
 │   ├── GhostText.java         # Placeholder/Hint text para campos
@@ -149,7 +184,7 @@ java-swing-apps/
 │   ├── sqlite-jdbc.jar        # Driver JDBC do SQLite
 │   ├── slf4j-api.jar          # Dependência de logging
 │   ├── slf4j-simple.jar       # Implementação de logging
-│   └── README.md              # Documentação detalhada do login system
+│   └── README.md              # Documentação detalhada do sistema
 ├── README.md                  # Este arquivo
 └── .gitignore                 # Ignora .class, .db e .log
 ```
@@ -163,7 +198,7 @@ java-swing-apps/
 - **Java JDK 8+** (JDK 17 ou superior recomendado)
 - Para o `login-system`, não é necessário instalar banco de dados — o SQLite é embutido
 
-### Login System
+### Service Management System
 
 1. Navegue até a pasta do projeto:
    ```bash
@@ -194,6 +229,8 @@ java-swing-apps/
    
    # Dentro do sqlite3:
    SELECT * FROM users;
+   SELECT * FROM clients;
+   SELECT * FROM service_orders;
    .quit
    ```
 
@@ -231,10 +268,13 @@ java-swing-apps/
 
 - **Java Swing** — GUI desktop multiplataforma
 - **CardLayout** — navegação entre telas (login ↔ cadastro)
+- **JDesktopPane + JInternalFrame** — interface MDI com janelas internas
+- **JMenuBar + JToolBar** — menu e barra de ferramentas
 - **GridBagLayout** — layout responsivo e alinhado
 - **SQLite + JDBC** — persistência local sem servidor
 - **SLF4J** — logging simples
 - **PreparedStatement** — queries SQL seguras contra injeção
+- **Foreign Keys** — relacionamento entre tabelas (clients ↔ service_orders)
 
 ---
 
