@@ -11,9 +11,11 @@ login-system/
 ├── MainApp.java                    # JFrame principal com CardLayout (login/cadastro)
 ├── LoginPanel.java                 # Tela de login
 ├── RegisterPanel.java              # Tela de cadastro
-├── ServiceManagementFrame.java     # Desktop principal com menu, toolbar e JDesktopPane
+├── ServiceManagementFrame.java     # Desktop principal com menu, toolbar e JDesktopPane (MDI)
 ├── ClientInternalFrame.java        # Tela interna de Cadastro de Clientes
 ├── ServiceOrderInternalFrame.java  # Tela interna de Ordem de Serviço
+├── ProdutoInternalFrame.java       # Tela interna de Cadastro de Produtos
+├── FornecedorInternalFrame.java    # Tela interna de Cadastro de Fornecedores
 ├── DarkDialog.java                 # Dialogs customizados com tema escuro
 ├── IconUtils.java                  # Carregador de ícones dos assets
 ├── UIUtils.java                    # Estilização de componentes visuais
@@ -27,6 +29,10 @@ login-system/
 ├── ClientDAO.java                  # Operações no banco de clientes
 ├── ServiceOrder.java               # Modelo de ordem de serviço
 ├── ServiceOrderDAO.java            # Operações no banco de OS
+├── Produto.java                    # Modelo de produto
+├── ProdutoDAO.java                 # Operações no banco de produtos
+├── Fornecedor.java                 # Modelo de fornecedor
+├── FornecedorDAO.java              # Operações no banco de fornecedores
 ├── sqlite-jdbc.jar                 # Driver JDBC do SQLite
 ├── slf4j-api.jar                   # Dependência de logging
 ├── slf4j-simple.jar                # Implementação simples de logging
@@ -49,15 +55,34 @@ login-system/
 
 ### Desktop Principal (MDI)
 Após o login, o sistema abre um desktop maximizado com:
-- **Barra de Menu**: Cadastro, Movimento, Relatório, Utilitário, Sobre, Ajuda
+- **Barra de Menu**: Cadastros, Movimento, Relatório, Utilitário, Sobre, Ajuda, **Janela**
 - **Toolbar**: Atalhos rápidos para Clientes, Serviços e Ordem de Serviço
 - **JDesktopPane**: Área de trabalho para janelas internas
 - **Menu de Contexto (Popup)**: Acesso rápido no desktop
+- **Anti-duplicatas**: Não permite abrir a mesma tela duas vezes — restaura a janela existente
+
+### Menu Janela
+- **Minimizar Todas**: Minimiza todas as janelas internas
+- **Restaurar Todas**: Restaura todas as janelas internas
+- **Cascata**: Organiza as janelas em cascata
+- **Grade**: Divide o desktop em grid automático
+- **Lado a Lado**: Organiza as janelas horizontalmente
+- **Fechar Todas**: Fecha todas as janelas internas
 
 ### Cadastro de Clientes
 - Formulário completo: Nome, Telefone, E-mail, Endereço
 - Tabela com todos os clientes cadastrados
 - Busca por nome em tempo real
+- Ações: Novo, Salvar, Atualizar, Excluir
+
+### Cadastro de Produtos
+- Formulário completo: Nome, Descrição, Preço, Quantidade
+- Tabela com todos os produtos cadastrados
+- Ações: Novo, Salvar, Atualizar, Excluir
+
+### Cadastro de Fornecedores
+- Formulário completo: Nome, CNPJ, Telefone, E-mail, Endereço
+- Tabela com todos os fornecedores cadastrados
 - Ações: Novo, Salvar, Atualizar, Excluir
 
 ### Ordem de Serviço (OS)
@@ -133,7 +158,7 @@ O projeto usa **SQLite embutido**, igual ao Java DB do NetBeans:
 
 - **Sem servidor**, sem instalação
 - O arquivo `login_system.db` é criado automaticamente na mesma pasta
-- As tabelas `users`, `clients` e `service_orders` são criadas automaticamente ao iniciar o app (`DatabaseSetup.init()`)
+- As tabelas `users`, `clients`, `service_orders`, `produtos` e `fornecedores` são criadas automaticamente ao iniciar o app (`DatabaseSetup.init()`)
 
 ### Estrutura das Tabelas
 
@@ -164,6 +189,23 @@ CREATE TABLE service_orders (
     status TEXT NOT NULL DEFAULT 'Aberta',
     FOREIGN KEY(client_id) REFERENCES clients(id)
 );
+
+CREATE TABLE produtos (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome TEXT NOT NULL,
+    descricao TEXT,
+    preco REAL,
+    quantidade INTEGER
+);
+
+CREATE TABLE fornecedores (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome TEXT NOT NULL,
+    cnpj TEXT,
+    telefone TEXT,
+    email TEXT,
+    endereco TEXT
+);
 ```
 
 ---
@@ -187,6 +229,12 @@ SELECT * FROM users;
 
 -- Ver todos os clientes
 SELECT * FROM clients;
+
+-- Ver todos os produtos
+SELECT * FROM produtos;
+
+-- Ver todos os fornecedores
+SELECT * FROM fornecedores;
 
 -- Ver todas as ordens de servico
 SELECT * FROM service_orders;
@@ -212,14 +260,16 @@ MainApp (JFrame)
 │   └── RegisterPanel → UserDAO → SQLite
 │
 └── ServiceManagementFrame (JFrame - após login)
-    ├── JMenuBar (Cadastro, Movimento, Relatório, Utilitário, Sobre, Ajuda)
+    ├── JMenuBar (Cadastros, Movimento, Relatório, Utilitário, Sobre, Ajuda, Janela)
     ├── JToolBar (Clientes, Serviços, OS)
     └── JDesktopPane
         ├── ClientInternalFrame → ClientDAO → SQLite
-        └── ServiceOrderInternalFrame → ServiceOrderDAO → SQLite
+        ├── ServiceOrderInternalFrame → ServiceOrderDAO → SQLite
+        ├── ProdutoInternalFrame → ProdutoDAO → SQLite
+        └── FornecedorInternalFrame → FornecedorDAO → SQLite
 ```
 
-- **UserDAO / ClientDAO / ServiceOrderDAO**: Camada de acesso a dados com PreparedStatement
+- **UserDAO / ClientDAO / ServiceOrderDAO / ProdutoDAO / FornecedorDAO**: Camada de acesso a dados com PreparedStatement
 - **DatabaseConnection**: Factory de conexões JDBC
 - **DatabaseSetup**: Cria as tabelas automaticamente se não existirem
 
