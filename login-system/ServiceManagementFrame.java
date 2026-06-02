@@ -133,16 +133,49 @@ public class ServiceManagementFrame extends JFrame {
         menuBar.setBackground(new Color(30, 30, 30));
         menuBar.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(100, 100, 100)));
 
-        // Menu Cadastro
-        JMenu menuCadastro = createMenu("Cadastro");
+        // Menu Cadastros
+        JMenu menuCadastro = createMenu("Cadastros");
         JMenuItem miClientes = createMenuItem("Clientes");
         miClientes.addActionListener(e -> openInternalFrame("Clientes", new ClientInternalFrame()));
         menuCadastro.add(miClientes);
 
-        JMenuItem miServicos = createMenuItem("Serviços");
-        miServicos.addActionListener(e -> DarkDialog.showInfo(this, "Serviços", "Módulo de serviços em desenvolvimento."));
-        menuCadastro.add(miServicos);
+        JMenuItem miProdutos = createMenuItem("Produtos");
+        miProdutos.addActionListener(e -> openInternalFrame("Produtos", new ProdutoInternalFrame()));
+        menuCadastro.add(miProdutos);
+
+        JMenuItem miFornecedores = createMenuItem("Fornecedores");
+        miFornecedores.addActionListener(e -> openInternalFrame("Fornecedores", new FornecedorInternalFrame()));
+        menuCadastro.add(miFornecedores);
         menuBar.add(menuCadastro);
+
+        // Menu Janela
+        JMenu menuJanela = createMenu("Janela");
+        JMenuItem miMinimizar = createMenuItem("Minimizar Todas");
+        miMinimizar.addActionListener(e -> minimizeAll());
+        menuJanela.add(miMinimizar);
+
+        JMenuItem miRestaurar = createMenuItem("Restaurar Todas");
+        miRestaurar.addActionListener(e -> restoreAll());
+        menuJanela.add(miRestaurar);
+        menuJanela.add(new JSeparator());
+
+        JMenuItem miCascata = createMenuItem("Cascata");
+        miCascata.addActionListener(e -> cascadeWindows());
+        menuJanela.add(miCascata);
+
+        JMenuItem miGrade = createMenuItem("Grade");
+        miGrade.addActionListener(e -> tileWindows());
+        menuJanela.add(miGrade);
+
+        JMenuItem miLado = createMenuItem("Lado a Lado");
+        miLado.addActionListener(e -> tileWindowsHorizontal());
+        menuJanela.add(miLado);
+        menuJanela.add(new JSeparator());
+
+        JMenuItem miFechar = createMenuItem("Fechar Todas");
+        miFechar.addActionListener(e -> closeAll());
+        menuJanela.add(miFechar);
+        menuBar.add(menuJanela);
 
         // Menu Movimento
         JMenu menuMovimento = createMenu("Movimento");
@@ -217,11 +250,22 @@ public class ServiceManagementFrame extends JFrame {
         return item;
     }
 
-    // abre uma janela interna no desktop pane
+    // abre uma janela interna no desktop pane — impede duplicatas pelo titulo
     private void openInternalFrame(String title, JComponent content) {
+        // verifica se ja existe uma janela com esse titulo aberta
+        for (JInternalFrame frame : desktopPane.getAllFrames()) {
+            if (frame.getTitle().equals(title) && !frame.isClosed()) {
+                try {
+                    frame.setIcon(false);     // restaura se estiver minimizada
+                    frame.setSelected(true);  // traz para frente
+                } catch (Exception ignored) {}
+                return;
+            }
+        }
+
         JInternalFrame frame = new JInternalFrame(title, true, true, true, true);
-        frame.setSize(600, 400);
-        frame.setLocation((desktopPane.getWidth() - 600) / 2, (desktopPane.getHeight() - 400) / 2);
+        frame.setSize(700, 500);
+        frame.setLocation((desktopPane.getWidth() - 700) / 2, (desktopPane.getHeight() - 500) / 2);
         if (desktopPane.getWidth() == 0 || desktopPane.getHeight() == 0) {
             frame.setLocation(50, 50);
         }
@@ -242,6 +286,86 @@ public class ServiceManagementFrame extends JFrame {
         try {
             frame.setSelected(true);
         } catch (Exception ignored) {}
+    }
+
+    // organiza as janelas em cascata
+    private void cascadeWindows() {
+        JInternalFrame[] frames = desktopPane.getAllFrames();
+        int x = 0, y = 0;
+        for (JInternalFrame frame : frames) {
+            try {
+                frame.setIcon(false);
+            } catch (Exception ignored) {}
+            frame.setLocation(x, y);
+            x += 30;
+            y += 30;
+        }
+    }
+
+    // organiza as janelas em grade (tile)
+    private void tileWindows() {
+        JInternalFrame[] frames = desktopPane.getAllFrames();
+        int count = frames.length;
+        if (count == 0) return;
+
+        int cols = (int) Math.ceil(Math.sqrt(count));
+        int rows = (int) Math.ceil((double) count / cols);
+
+        int w = desktopPane.getWidth() / cols;
+        int h = desktopPane.getHeight() / rows;
+
+        int i = 0;
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols && i < count; c++) {
+                try {
+                    frames[i].setIcon(false);
+                } catch (Exception ignored) {}
+                frames[i].setBounds(c * w, r * h, w, h);
+                i++;
+            }
+        }
+    }
+
+    // organiza as janelas lado a lado (horizontal)
+    private void tileWindowsHorizontal() {
+        JInternalFrame[] frames = desktopPane.getAllFrames();
+        int count = frames.length;
+        if (count == 0) return;
+
+        int w = desktopPane.getWidth() / count;
+        int h = desktopPane.getHeight();
+
+        for (int i = 0; i < count; i++) {
+            try {
+                frames[i].setIcon(false);
+            } catch (Exception ignored) {}
+            frames[i].setBounds(i * w, 0, w, h);
+        }
+    }
+
+    // minimiza todas as janelas internas
+    private void minimizeAll() {
+        for (JInternalFrame frame : desktopPane.getAllFrames()) {
+            try {
+                frame.setIcon(true);
+            } catch (Exception ignored) {}
+        }
+    }
+
+    // restaura todas as janelas internas
+    private void restoreAll() {
+        for (JInternalFrame frame : desktopPane.getAllFrames()) {
+            try {
+                frame.setIcon(false);
+            } catch (Exception ignored) {}
+        }
+    }
+
+    // fecha todas as janelas internas
+    private void closeAll() {
+        for (JInternalFrame frame : desktopPane.getAllFrames()) {
+            frame.dispose();
+        }
     }
 
     // abre a calculadora do sistema operacional
