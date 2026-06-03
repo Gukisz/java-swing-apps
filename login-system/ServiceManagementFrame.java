@@ -148,35 +148,6 @@ public class ServiceManagementFrame extends JFrame {
         menuCadastro.add(miFornecedores);
         menuBar.add(menuCadastro);
 
-        // Menu Janela
-        JMenu menuJanela = createMenu("Janela");
-        JMenuItem miMinimizar = createMenuItem("Minimizar Todas");
-        miMinimizar.addActionListener(e -> minimizeAll());
-        menuJanela.add(miMinimizar);
-
-        JMenuItem miRestaurar = createMenuItem("Restaurar Todas");
-        miRestaurar.addActionListener(e -> restoreAll());
-        menuJanela.add(miRestaurar);
-        menuJanela.add(new JSeparator());
-
-        JMenuItem miCascata = createMenuItem("Cascata");
-        miCascata.addActionListener(e -> cascadeWindows());
-        menuJanela.add(miCascata);
-
-        JMenuItem miGrade = createMenuItem("Grade");
-        miGrade.addActionListener(e -> tileWindows());
-        menuJanela.add(miGrade);
-
-        JMenuItem miLado = createMenuItem("Lado a Lado");
-        miLado.addActionListener(e -> tileWindowsHorizontal());
-        menuJanela.add(miLado);
-        menuJanela.add(new JSeparator());
-
-        JMenuItem miFechar = createMenuItem("Fechar Todas");
-        miFechar.addActionListener(e -> closeAll());
-        menuJanela.add(miFechar);
-        menuBar.add(menuJanela);
-
         // Menu Movimento
         JMenu menuMovimento = createMenu("Movimento");
         JMenuItem miOS = createMenuItem("Ordem de Serviço");
@@ -222,6 +193,35 @@ public class ServiceManagementFrame extends JFrame {
             "Sistema de Gestão de Serviços\nVersão 1.0\n\nDesenvolvido com Java Swing + SQLite."));
         menuSobre.add(miInfo);
         menuBar.add(menuSobre);
+
+        // Menu Janela
+        JMenu menuJanela = createMenu("Janela");
+        JMenuItem miMinimizar = createMenuItem("Minimizar Todas");
+        miMinimizar.addActionListener(e -> minimizeAll());
+        menuJanela.add(miMinimizar);
+
+        JMenuItem miRestaurar = createMenuItem("Restaurar Todas");
+        miRestaurar.addActionListener(e -> restoreAll());
+        menuJanela.add(miRestaurar);
+        menuJanela.add(new JSeparator());
+
+        JMenuItem miCascata = createMenuItem("Cascata");
+        miCascata.addActionListener(e -> cascadeWindows());
+        menuJanela.add(miCascata);
+
+        JMenuItem miGrade = createMenuItem("Grade");
+        miGrade.addActionListener(e -> tileWindows());
+        menuJanela.add(miGrade);
+
+        JMenuItem miLado = createMenuItem("Lado a Lado");
+        miLado.addActionListener(e -> tileWindowsHorizontal());
+        menuJanela.add(miLado);
+        menuJanela.add(new JSeparator());
+
+        JMenuItem miFechar = createMenuItem("Fechar Todas");
+        miFechar.addActionListener(e -> closeAll());
+        menuJanela.add(miFechar);
+        menuBar.add(menuJanela);
 
         // Menu Ajuda
         JMenu menuAjuda = createMenu("Ajuda");
