@@ -36,21 +36,22 @@ public class DatabaseSetup {
                 + "FOREIGN KEY(client_id) REFERENCES clients(id)"
                 + ");";
 
-        String produtosSql = "CREATE TABLE IF NOT EXISTS produtos ("
+        String productsSql = "CREATE TABLE IF NOT EXISTS products ("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + "nome TEXT NOT NULL,"
-                + "descricao TEXT,"
-                + "preco REAL,"
-                + "quantidade INTEGER"
+                + "name TEXT NOT NULL,"
+                + "description TEXT,"
+                + "price REAL,"
+                + "stock INTEGER,"
+                + "supplier TEXT"
                 + ");";
 
-        String fornecedoresSql = "CREATE TABLE IF NOT EXISTS fornecedores ("
+        String suppliersSql = "CREATE TABLE IF NOT EXISTS suppliers ("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + "nome TEXT NOT NULL,"
-                + "cnpj TEXT,"
-                + "telefone TEXT,"
+                + "name TEXT NOT NULL,"
+                + "phone TEXT,"
                 + "email TEXT,"
-                + "endereco TEXT"
+                + "address TEXT,"
+                + "cnpj TEXT"
                 + ");";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -58,8 +59,8 @@ public class DatabaseSetup {
             stmt.execute(usersSql);
             stmt.execute(clientsSql);
             stmt.execute(ordersSql);
-            stmt.execute(produtosSql);
-            stmt.execute(fornecedoresSql);
+            stmt.execute(productsSql);
+            stmt.execute(suppliersSql);
             System.out.println("Banco de dados inicializado com sucesso.");
         } catch (Exception e) {
             System.err.println("Erro ao inicializar banco: " + e.getMessage());
