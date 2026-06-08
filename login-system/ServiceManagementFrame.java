@@ -73,7 +73,7 @@ public class ServiceManagementFrame extends JFrame {
         btnProduto.addActionListener(e -> openInternalFrame("Produtos", new ProductInternalFrame()));
         toolBar.add(btnProduto);
 
-        JButton btnServico = createToolButton("atualizacao-do-sistema.png", "Serviços");
+        JButton btnServico = createToolButton("ordem-de-servico.png", "Serviços");
         btnServico.addActionListener(e -> openInternalFrame("Serviços", new ServiceInternalFrame()));
         toolBar.add(btnServico);
 

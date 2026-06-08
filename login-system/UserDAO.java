@@ -49,4 +49,19 @@ public class UserDAO {
     public boolean emailExists(String email) {
         return findByEmail(email) != null;
     }
+
+    // atualiza a senha de um usuario pelo email
+    public boolean updatePassword(String email, String newPassword) {
+        String sql = "UPDATE users SET password = ? WHERE email = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, newPassword);
+            pstmt.setString(2, email);
+            pstmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.err.println("Erro ao atualizar senha: " + e.getMessage());
+            return false;
+        }
+    }
 }

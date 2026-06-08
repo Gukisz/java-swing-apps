@@ -80,8 +80,7 @@ public class LoginPanel extends JPanel {
         // acoes dos botoes
         loginButton.addActionListener(e -> handleLogin());
         signupButton.addActionListener(e -> mainApp.showRegister());
-        forgotBtn.addActionListener(e ->
-                DarkDialog.showInfo(this, "Informação", "Funcionalidade de recuperação de senha em breve."));
+        forgotBtn.addActionListener(e -> showForgotPasswordDialog());
 
         // quando a tela aparece, limpa os campos
         addComponentListener(new ComponentAdapter() {
@@ -193,5 +192,93 @@ public class LoginPanel extends JPanel {
         emailField.setText("");
         passwordField.setText("");
         requestFocusInWindow();
+    }
+
+    // dialog de recuperacao de senha com tema escuro
+    private void showForgotPasswordDialog() {
+        Window parent = SwingUtilities.getWindowAncestor(this);
+        JDialog dialog = new JDialog(parent, "Recuperar Senha", Dialog.ModalityType.APPLICATION_MODAL);
+        dialog.setUndecorated(false);
+        dialog.getRootPane().setBorder(BorderFactory.createLineBorder(new Color(100, 100, 100), 2));
+        dialog.setBackground(new Color(30, 30, 30));
+
+        JPanel content = new JPanel(new GridBagLayout());
+        content.setBackground(Color.BLACK);
+        content.setBorder(BorderFactory.createEmptyBorder(20, 25, 20, 25));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(8, 0, 8, 0);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+
+        JLabel title = new JLabel("Recuperar Senha", SwingConstants.CENTER);
+        title.setFont(new Font("SansSerif", Font.BOLD, 20));
+        title.setForeground(Color.WHITE);
+        content.add(title, gbc);
+
+        gbc.gridy = 1;
+        JLabel info = new JLabel("<html><center>Digite seu e-mail e uma nova senha.</center></html>", SwingConstants.CENTER);
+        info.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        info.setForeground(Color.LIGHT_GRAY);
+        content.add(info, gbc);
+
+        gbc.gridy = 2;
+        JTextField emailField = UIUtils.createStyledTextField(20);
+        GhostText emailGhost = new GhostText(emailField, "E-mail");
+        content.add(emailField, gbc);
+
+        gbc.gridy = 3;
+        JPasswordField passField = UIUtils.createStyledPasswordField(20);
+        GhostText passGhost = new GhostText(passField, "Nova Senha");
+        content.add(passField, gbc);
+
+        gbc.gridy = 4;
+        JPasswordField confirmField = UIUtils.createStyledPasswordField(20);
+        GhostText confirmGhost = new GhostText(confirmField, "Confirmar Nova Senha");
+        content.add(confirmField, gbc);
+
+        gbc.gridy = 5;
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
+        btnPanel.setBackground(Color.BLACK);
+
+        JButton recoverBtn = UIUtils.createStyledButton("RECUPERAR", Color.WHITE, Color.BLACK);
+        JButton cancelBtn = UIUtils.createStyledButton("CANCELAR", Color.WHITE, Color.BLACK);
+
+        recoverBtn.addActionListener(e -> {
+            String email = emailField.getText();
+            String pass = new String(passField.getPassword());
+            String confirm = new String(confirmField.getPassword());
+
+            if (emailGhost.isShowingGhost() || passGhost.isShowingGhost() || confirmGhost.isShowingGhost()) {
+                DarkDialog.showError(content, "Erro", "Preencha todos os campos.");
+            } else if (!ValidationUtils.isValidEmail(email)) {
+                DarkDialog.showError(content, "Erro", "E-mail invalido.");
+            } else if (!userDAO.emailExists(email)) {
+                DarkDialog.showError(content, "Erro", "E-mail nao encontrado.");
+            } else if (!ValidationUtils.isValidPassword(pass)) {
+                DarkDialog.showError(content, "Erro", "Senha deve ter pelo menos 8 caracteres e um especial.");
+            } else if (!pass.equals(confirm)) {
+                DarkDialog.showError(content, "Erro", "As senhas nao coincidem.");
+            } else {
+                if (userDAO.updatePassword(email, pass)) {
+                    DarkDialog.showInfo(content, "Sucesso", "Senha atualizada com sucesso!");
+                    dialog.dispose();
+                } else {
+                    DarkDialog.showError(content, "Erro", "Erro ao atualizar senha.");
+                }
+            }
+        });
+
+        cancelBtn.addActionListener(e -> dialog.dispose());
+
+        btnPanel.add(recoverBtn);
+        btnPanel.add(cancelBtn);
+        content.add(btnPanel, gbc);
+
+        dialog.setContentPane(content);
+        dialog.pack();
+        dialog.setLocationRelativeTo(parent);
+        dialog.setVisible(true);
     }
 }
