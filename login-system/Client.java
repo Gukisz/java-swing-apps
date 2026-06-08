@@ -3,15 +3,15 @@ public class Client {
     private String name;
     private String phone;
     private String email;
-    private String address;
+    private String cpf;
 
     public Client() {}
 
-    public Client(String name, String phone, String email, String address) {
+    public Client(String name, String phone, String email, String cpf) {
         this.name = name;
         this.phone = phone;
         this.email = email;
-        this.address = address;
+        this.cpf = cpf;
     }
 
     public int getId() { return id; }
@@ -26,6 +26,6 @@ public class Client {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    public String getAddress() { return address; }
-    public void setAddress(String address) { this.address = address; }
+    public String getCpf() { return cpf; }
+    public void setCpf(String cpf) { this.cpf = cpf; }
 }

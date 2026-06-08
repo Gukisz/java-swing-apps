@@ -21,7 +21,7 @@ public class DatabaseSetup {
                 + "name TEXT NOT NULL,"
                 + "phone TEXT,"
                 + "email TEXT,"
-                + "address TEXT"
+                + "cpf TEXT"
                 + ");";
 
         String ordersSql = "CREATE TABLE IF NOT EXISTS service_orders ("

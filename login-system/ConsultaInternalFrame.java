@@ -181,7 +181,7 @@ public class ConsultaInternalFrame extends JPanel {
     private void populateClientTable(List<Client> list) {
         clientModel.setRowCount(0);
         for (Client c : list) {
-            clientModel.addRow(new Object[]{c.getId(), c.getName(), c.getPhone(), c.getEmail(), c.getAddress()});
+            clientModel.addRow(new Object[]{c.getId(), c.getName(), c.getPhone(), c.getEmail(), c.getCpf()});
         }
     }
 

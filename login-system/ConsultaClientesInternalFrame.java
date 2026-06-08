@@ -53,7 +53,7 @@ public class ConsultaClientesInternalFrame extends JPanel {
         searchPanel.add(searchField, BorderLayout.CENTER);
         panel.add(searchPanel, BorderLayout.NORTH);
 
-        model = new DefaultTableModel(new String[]{"ID", "Nome", "Telefone", "E-mail", "Endereco"}, 0) {
+        model = new DefaultTableModel(new String[]{"ID", "Nome", "Telefone", "E-mail", "CPF"}, 0) {
             public boolean isCellEditable(int r, int c) { return false; }
         };
         table = createStyledTable(model);
@@ -97,7 +97,7 @@ public class ConsultaClientesInternalFrame extends JPanel {
     private void populateTable(List<Client> list) {
         model.setRowCount(0);
         for (Client c : list) {
-            model.addRow(new Object[]{c.getId(), c.getName(), c.getPhone(), c.getEmail(), c.getAddress()});
+            model.addRow(new Object[]{c.getId(), c.getName(), c.getPhone(), c.getEmail(), c.getCpf()});
         }
     }
 }

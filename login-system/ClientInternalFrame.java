@@ -11,7 +11,7 @@ public class ClientInternalFrame extends JPanel {
     private JTable table;
     private DefaultTableModel model;
     private JTextField searchField;
-    private JTextField nameField, phoneField, emailField, addressField;
+    private JTextField nameField, phoneField, emailField, cpfField;
     private int selectedId = -1;
 
     private static final Color BG = Color.BLACK;
@@ -47,7 +47,7 @@ public class ClientInternalFrame extends JPanel {
         nameField = addFormRow(panel, gbc, 0, "Nome:", new JTextField(25));
         phoneField = addFormRow(panel, gbc, 1, "Telefone:", new JTextField(15));
         emailField = addFormRow(panel, gbc, 2, "E-mail:", new JTextField(20));
-        addressField = addFormRow(panel, gbc, 3, "Endereço:", new JTextField(30));
+        cpfField = addFormRow(panel, gbc, 3, "CPF:", new JTextField(15));
 
         return panel;
     }
@@ -109,7 +109,7 @@ public class ClientInternalFrame extends JPanel {
         panel.add(searchPanel, BorderLayout.NORTH);
 
         // tabela
-        model = new DefaultTableModel(new String[]{"ID", "Nome", "Telefone", "E-mail", "Endereço"}, 0) {
+        model = new DefaultTableModel(new String[]{"ID", "Nome", "Telefone", "E-mail", "CPF"}, 0) {
             public boolean isCellEditable(int row, int column) { return false; }
         };
         table = new JTable(model);
@@ -130,7 +130,7 @@ public class ClientInternalFrame extends JPanel {
                 nameField.setText((String) model.getValueAt(table.getSelectedRow(), 1));
                 phoneField.setText((String) model.getValueAt(table.getSelectedRow(), 2));
                 emailField.setText((String) model.getValueAt(table.getSelectedRow(), 3));
-                addressField.setText((String) model.getValueAt(table.getSelectedRow(), 4));
+                cpfField.setText((String) model.getValueAt(table.getSelectedRow(), 4));
             }
         });
 
@@ -179,7 +179,7 @@ public class ClientInternalFrame extends JPanel {
     private void populateTable(List<Client> list) {
         model.setRowCount(0);
         for (Client c : list) {
-            model.addRow(new Object[]{c.getId(), c.getName(), c.getPhone(), c.getEmail(), c.getAddress()});
+            model.addRow(new Object[]{c.getId(), c.getName(), c.getPhone(), c.getEmail(), c.getCpf()});
         }
     }
 
@@ -189,7 +189,7 @@ public class ClientInternalFrame extends JPanel {
             DarkDialog.showError(this, "Erro", "O nome do cliente é obrigatório.");
             return;
         }
-        Client c = new Client(name, phoneField.getText().trim(), emailField.getText().trim(), addressField.getText().trim());
+        Client c = new Client(name, phoneField.getText().trim(), emailField.getText().trim(), cpfField.getText().trim());
         if (clientDAO.insert(c)) {
             DarkDialog.showInfo(this, "Sucesso", "Cliente cadastrado com sucesso!");
             clearForm();
@@ -209,7 +209,7 @@ public class ClientInternalFrame extends JPanel {
             DarkDialog.showError(this, "Erro", "O nome do cliente é obrigatório.");
             return;
         }
-        Client c = new Client(name, phoneField.getText().trim(), emailField.getText().trim(), addressField.getText().trim());
+        Client c = new Client(name, phoneField.getText().trim(), emailField.getText().trim(), cpfField.getText().trim());
         c.setId(selectedId);
         if (clientDAO.update(c)) {
             DarkDialog.showInfo(this, "Sucesso", "Cliente atualizado com sucesso!");
@@ -241,7 +241,7 @@ public class ClientInternalFrame extends JPanel {
         nameField.setText("");
         phoneField.setText("");
         emailField.setText("");
-        addressField.setText("");
+        cpfField.setText("");
         table.clearSelection();
     }
 }

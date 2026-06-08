@@ -5,13 +5,13 @@ import java.util.List;
 public class ClientDAO {
 
     public boolean insert(Client client) {
-        String sql = "INSERT INTO clients(name, phone, email, address) VALUES(?, ?, ?, ?)";
+        String sql = "INSERT INTO clients(name, phone, email, cpf) VALUES(?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, client.getName());
             pstmt.setString(2, client.getPhone());
             pstmt.setString(3, client.getEmail());
-            pstmt.setString(4, client.getAddress());
+            pstmt.setString(4, client.getCpf());
             pstmt.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -32,7 +32,7 @@ public class ClientDAO {
                 c.setName(rs.getString("name"));
                 c.setPhone(rs.getString("phone"));
                 c.setEmail(rs.getString("email"));
-                c.setAddress(rs.getString("address"));
+                c.setCpf(rs.getString("cpf"));
                 list.add(c);
             }
         } catch (SQLException e) {
@@ -42,13 +42,13 @@ public class ClientDAO {
     }
 
     public boolean update(Client client) {
-        String sql = "UPDATE clients SET name=?, phone=?, email=?, address=? WHERE id=?";
+        String sql = "UPDATE clients SET name=?, phone=?, email=?, cpf=? WHERE id=?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, client.getName());
             pstmt.setString(2, client.getPhone());
             pstmt.setString(3, client.getEmail());
-            pstmt.setString(4, client.getAddress());
+            pstmt.setString(4, client.getCpf());
             pstmt.setInt(5, client.getId());
             pstmt.executeUpdate();
             return true;
@@ -84,7 +84,7 @@ public class ClientDAO {
                 c.setName(rs.getString("name"));
                 c.setPhone(rs.getString("phone"));
                 c.setEmail(rs.getString("email"));
-                c.setAddress(rs.getString("address"));
+                c.setCpf(rs.getString("cpf"));
                 list.add(c);
             }
         } catch (SQLException e) {

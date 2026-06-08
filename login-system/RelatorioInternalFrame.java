@@ -107,7 +107,7 @@ public class RelatorioInternalFrame extends JPanel implements Printable {
         html.append("<th style='padding:10px; border:1px solid #646464; text-align:left;'>Nome</th>");
         html.append("<th style='padding:10px; border:1px solid #646464; text-align:left;'>Telefone</th>");
         html.append("<th style='padding:10px; border:1px solid #646464; text-align:left;'>E-mail</th>");
-        html.append("<th style='padding:10px; border:1px solid #646464; text-align:left;'>Endereço</th>");
+        html.append("<th style='padding:10px; border:1px solid #646464; text-align:left;'>CPF</th>");
         html.append("</tr>");
         for (Client c : list) {
             html.append("<tr style='background:#1E1E1E;'>");
@@ -115,7 +115,7 @@ public class RelatorioInternalFrame extends JPanel implements Printable {
             html.append("<td style='padding:8px; border:1px solid #646464;'>").append(escape(c.getName())).append("</td>");
             html.append("<td style='padding:8px; border:1px solid #646464;'>").append(escape(c.getPhone())).append("</td>");
             html.append("<td style='padding:8px; border:1px solid #646464;'>").append(escape(c.getEmail())).append("</td>");
-            html.append("<td style='padding:8px; border:1px solid #646464;'>").append(escape(c.getAddress())).append("</td>");
+            html.append("<td style='padding:8px; border:1px solid #646464;'>").append(escape(c.getCpf())).append("</td>");
             html.append("</tr>");
         }
         html.append("</table></body></html>");
