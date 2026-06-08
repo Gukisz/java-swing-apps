@@ -54,6 +54,13 @@ public class DatabaseSetup {
                 + "cnpj TEXT"
                 + ");";
 
+        String servicesSql = "CREATE TABLE IF NOT EXISTS services ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "name TEXT NOT NULL,"
+                + "description TEXT,"
+                + "price REAL"
+                + ");";
+
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement()) {
             stmt.execute(usersSql);
@@ -61,6 +68,7 @@ public class DatabaseSetup {
             stmt.execute(ordersSql);
             stmt.execute(productsSql);
             stmt.execute(suppliersSql);
+            stmt.execute(servicesSql);
             System.out.println("Banco de dados inicializado com sucesso.");
         } catch (Exception e) {
             System.err.println("Erro ao inicializar banco: " + e.getMessage());

@@ -69,17 +69,13 @@ public class ServiceManagementFrame extends JFrame {
         btnCliente.addActionListener(e -> openInternalFrame("Clientes", new ClientInternalFrame()));
         toolBar.add(btnCliente);
 
-        JButton btnConsulta = createToolButton("lupa.png", "Consulta");
-        btnConsulta.addActionListener(e -> openInternalFrame("Consulta", new ConsultaInternalFrame()));
-        toolBar.add(btnConsulta);
+        JButton btnProduto = createToolButton("descricao-do-produto.png", "Produtos");
+        btnProduto.addActionListener(e -> openInternalFrame("Produtos", new ProductInternalFrame()));
+        toolBar.add(btnProduto);
 
-        JButton btnOS = createToolButton("ordem-de-servico.png", "Ordem de Serviço");
-        btnOS.addActionListener(e -> openInternalFrame("Ordem de Serviço", new ServiceOrderInternalFrame()));
-        toolBar.add(btnOS);
-
-        JButton btnRelatorio = createToolButton("relatorio.png", "Relatórios");
-        btnRelatorio.addActionListener(e -> openInternalFrame("Relatórios", new RelatorioInternalFrame()));
-        toolBar.add(btnRelatorio);
+        JButton btnServico = createToolButton("atualizacao-do-sistema.png", "Serviços");
+        btnServico.addActionListener(e -> openInternalFrame("Serviços", new ServiceInternalFrame()));
+        toolBar.add(btnServico);
 
         return toolBar;
     }
@@ -113,13 +109,13 @@ public class ServiceManagementFrame extends JFrame {
         itemCliente.addActionListener(e -> openInternalFrame("Clientes", new ClientInternalFrame()));
         popup.add(itemCliente);
 
-        JMenuItem itemConsulta = createPopupItem("Consulta");
-        itemConsulta.addActionListener(e -> openInternalFrame("Consulta", new ConsultaInternalFrame()));
-        popup.add(itemConsulta);
+        JMenuItem itemProduto = createPopupItem("Produtos");
+        itemProduto.addActionListener(e -> openInternalFrame("Produtos", new ProductInternalFrame()));
+        popup.add(itemProduto);
 
-        JMenuItem itemOS = createPopupItem("Ordem de Serviço");
-        itemOS.addActionListener(e -> openInternalFrame("Ordem de Serviço", new ServiceOrderInternalFrame()));
-        popup.add(itemOS);
+        JMenuItem itemServico = createPopupItem("Serviços");
+        itemServico.addActionListener(e -> openInternalFrame("Serviços", new ServiceInternalFrame()));
+        popup.add(itemServico);
 
         return popup;
     }
@@ -137,29 +133,49 @@ public class ServiceManagementFrame extends JFrame {
         menuBar.setBackground(new Color(30, 30, 30));
         menuBar.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(100, 100, 100)));
 
-        // Menu Cadastros
-        JMenu menuCadastro = createMenu("Cadastros");
+        // Menu Cadastro
+        JMenu menuCadastro = createMenu("Cadastro");
         JMenuItem miClientes = createMenuItem("Clientes");
         miClientes.addActionListener(e -> openInternalFrame("Clientes", new ClientInternalFrame()));
         menuCadastro.add(miClientes);
 
-        JMenuItem miOS = createMenuItem("Ordem de Serviço");
-        miOS.addActionListener(e -> openInternalFrame("Ordem de Serviço", new ServiceOrderInternalFrame()));
-        menuCadastro.add(miOS);
+        JMenuItem miProdutos = createMenuItem("Produtos");
+        miProdutos.addActionListener(e -> openInternalFrame("Produtos", new ProductInternalFrame()));
+        menuCadastro.add(miProdutos);
+
+        JMenuItem miServicos = createMenuItem("Serviços");
+        miServicos.addActionListener(e -> openInternalFrame("Serviços", new ServiceInternalFrame()));
+        menuCadastro.add(miServicos);
         menuBar.add(menuCadastro);
 
         // Menu Consulta
         JMenu menuConsulta = createMenu("Consulta");
-        JMenuItem miConsulta = createMenuItem("Clientes, Produtos e Fornecedores");
-        miConsulta.addActionListener(e -> openInternalFrame("Consulta", new ConsultaInternalFrame()));
-        menuConsulta.add(miConsulta);
+        JMenuItem miConsultaClientes = createMenuItem("Clientes");
+        miConsultaClientes.addActionListener(e -> openInternalFrame("Consulta de Clientes", new ConsultaClientesInternalFrame()));
+        menuConsulta.add(miConsultaClientes);
+
+        JMenuItem miConsultaProdutos = createMenuItem("Produtos");
+        miConsultaProdutos.addActionListener(e -> openInternalFrame("Consulta de Produtos", new ConsultaProdutosInternalFrame()));
+        menuConsulta.add(miConsultaProdutos);
+
+        JMenuItem miConsultaServicos = createMenuItem("Serviços");
+        miConsultaServicos.addActionListener(e -> openInternalFrame("Consulta de Serviços", new ConsultaServicosInternalFrame()));
+        menuConsulta.add(miConsultaServicos);
         menuBar.add(menuConsulta);
 
         // Menu Relatório
         JMenu menuRelatorio = createMenu("Relatório");
-        JMenuItem miRelatorio = createMenuItem("Gerar Relatórios");
-        miRelatorio.addActionListener(e -> openInternalFrame("Relatórios", new RelatorioInternalFrame()));
-        menuRelatorio.add(miRelatorio);
+        JMenuItem miRelClientes = createMenuItem("Clientes");
+        miRelClientes.addActionListener(e -> openInternalFrame("Relatório de Clientes", new RelatorioClientesInternalFrame()));
+        menuRelatorio.add(miRelClientes);
+
+        JMenuItem miRelProdutos = createMenuItem("Produtos");
+        miRelProdutos.addActionListener(e -> openInternalFrame("Relatório de Produtos", new RelatorioProdutosInternalFrame()));
+        menuRelatorio.add(miRelProdutos);
+
+        JMenuItem miRelServicos = createMenuItem("Serviços");
+        miRelServicos.addActionListener(e -> openInternalFrame("Relatório de Serviços", new RelatorioServicosInternalFrame()));
+        menuRelatorio.add(miRelServicos);
         menuBar.add(menuRelatorio);
 
         // Menu Utilitário
