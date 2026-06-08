@@ -72,11 +72,20 @@ public class ClientDAO {
     }
 
     public List<Client> searchByName(String query) {
+        return searchByAnyField(query);
+    }
+
+    // busca por nome, telefone, email ou cpf
+    public List<Client> searchByAnyField(String query) {
         List<Client> list = new ArrayList<>();
-        String sql = "SELECT * FROM clients WHERE name LIKE ? ORDER BY name";
+        String sql = "SELECT * FROM clients WHERE name LIKE ? OR phone LIKE ? OR email LIKE ? OR cpf LIKE ? ORDER BY name";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, "%" + query + "%");
+            String q = "%" + query + "%";
+            pstmt.setString(1, q);
+            pstmt.setString(2, q);
+            pstmt.setString(3, q);
+            pstmt.setString(4, q);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 Client c = new Client();
@@ -91,5 +100,39 @@ public class ClientDAO {
             System.err.println("Erro ao buscar clientes: " + e.getMessage());
         }
         return list;
+    }
+
+    public boolean cpfExists(String cpf) {
+        String sql = "SELECT * FROM clients WHERE cpf = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, cpf);
+            ResultSet rs = pstmt.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            System.err.println("Erro ao verificar CPF: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public Client findByCpf(String cpf) {
+        String sql = "SELECT * FROM clients WHERE cpf = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, cpf);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                Client c = new Client();
+                c.setId(rs.getInt("id"));
+                c.setName(rs.getString("name"));
+                c.setPhone(rs.getString("phone"));
+                c.setEmail(rs.getString("email"));
+                c.setCpf(rs.getString("cpf"));
+                return c;
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro ao buscar cliente por CPF: " + e.getMessage());
+        }
+        return null;
     }
 }

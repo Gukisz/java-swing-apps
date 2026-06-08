@@ -1,7 +1,9 @@
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 import java.sql.Statement;
 
-// cria a tabela de usuarios se ela nao existir ainda
+// cria e migra as tabelas automaticamente
 public class DatabaseSetup {
 
     public static void main(String[] args) {
@@ -21,7 +23,7 @@ public class DatabaseSetup {
                 + "name TEXT NOT NULL,"
                 + "phone TEXT,"
                 + "email TEXT,"
-                + "cpf TEXT"
+                + "cpf TEXT UNIQUE"
                 + ");";
 
         String ordersSql = "CREATE TABLE IF NOT EXISTS service_orders ("
@@ -69,9 +71,28 @@ public class DatabaseSetup {
             stmt.execute(productsSql);
             stmt.execute(suppliersSql);
             stmt.execute(servicesSql);
+
+            // migracao: adiciona cpf se a tabela antiga existir sem ele
+            migrateClientsTable(conn, stmt);
+
             System.out.println("Banco de dados inicializado com sucesso.");
         } catch (Exception e) {
             System.err.println("Erro ao inicializar banco: " + e.getMessage());
+        }
+    }
+
+    private static void migrateClientsTable(Connection conn, Statement stmt) {
+        try {
+            DatabaseMetaData meta = conn.getMetaData();
+            ResultSet rs = meta.getColumns(null, null, "clients", "cpf");
+            if (!rs.next()) {
+                // coluna cpf nao existe, adiciona
+                stmt.execute("ALTER TABLE clients ADD COLUMN cpf TEXT UNIQUE");
+                System.out.println("Migracao: coluna cpf adicionada a tabela clients.");
+            }
+            rs.close();
+        } catch (Exception e) {
+            System.err.println("Erro na migracao: " + e.getMessage());
         }
     }
 }

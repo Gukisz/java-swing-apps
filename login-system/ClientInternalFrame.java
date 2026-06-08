@@ -189,7 +189,12 @@ public class ClientInternalFrame extends JPanel {
             DarkDialog.showError(this, "Erro", "O nome do cliente é obrigatório.");
             return;
         }
-        Client c = new Client(name, phoneField.getText().trim(), emailField.getText().trim(), cpfField.getText().trim());
+        String cpf = cpfField.getText().trim();
+        if (!cpf.isEmpty() && clientDAO.cpfExists(cpf)) {
+            DarkDialog.showError(this, "Erro", "CPF já cadastrado.");
+            return;
+        }
+        Client c = new Client(name, phoneField.getText().trim(), emailField.getText().trim(), cpf);
         if (clientDAO.insert(c)) {
             DarkDialog.showInfo(this, "Sucesso", "Cliente cadastrado com sucesso!");
             clearForm();
@@ -209,7 +214,15 @@ public class ClientInternalFrame extends JPanel {
             DarkDialog.showError(this, "Erro", "O nome do cliente é obrigatório.");
             return;
         }
-        Client c = new Client(name, phoneField.getText().trim(), emailField.getText().trim(), cpfField.getText().trim());
+        String cpf = cpfField.getText().trim();
+        if (!cpf.isEmpty()) {
+            Client existing = clientDAO.findByCpf(cpf);
+            if (existing != null && existing.getId() != selectedId) {
+                DarkDialog.showError(this, "Erro", "CPF já cadastrado para outro cliente.");
+                return;
+            }
+        }
+        Client c = new Client(name, phoneField.getText().trim(), emailField.getText().trim(), cpf);
         c.setId(selectedId);
         if (clientDAO.update(c)) {
             DarkDialog.showInfo(this, "Sucesso", "Cliente atualizado com sucesso!");
