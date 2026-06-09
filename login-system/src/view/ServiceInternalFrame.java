@@ -15,7 +15,6 @@ public class ServiceInternalFrame extends JPanel {
     private ServiceDAO serviceDAO;
     private JTable table;
     private DefaultTableModel model;
-    private JTextField searchField;
     private JTextField nameField, descriptionField, priceField;
     private int selectedId = -1;
 
@@ -85,28 +84,6 @@ public class ServiceInternalFrame extends JPanel {
     private JPanel createTablePanel() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(BG);
-
-        JPanel searchPanel = new JPanel(new BorderLayout(5, 0));
-        searchPanel.setBackground(BG);
-        JLabel searchLabel = new JLabel("Buscar:");
-        searchLabel.setFont(LABEL_FONT);
-        searchLabel.setForeground(FG);
-        searchPanel.add(searchLabel, BorderLayout.WEST);
-
-        searchField = new JTextField();
-        styleField(searchField);
-        searchField.getDocument().addDocumentListener(new DocumentListener() {
-            public void insertUpdate(DocumentEvent e) { filter(); }
-            public void removeUpdate(DocumentEvent e) { filter(); }
-            public void changedUpdate(DocumentEvent e) { filter(); }
-            private void filter() {
-                String q = searchField.getText().trim();
-                if (q.isEmpty()) loadData();
-                else populateTable(serviceDAO.searchByName(q));
-            }
-        });
-        searchPanel.add(searchField, BorderLayout.CENTER);
-        panel.add(searchPanel, BorderLayout.NORTH);
 
         model = new DefaultTableModel(new String[]{"ID", "Nome", "Descricao", "Preco"}, 0) {
             public boolean isCellEditable(int row, int column) { return false; }
