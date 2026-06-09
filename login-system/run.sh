@@ -7,7 +7,9 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$DIR"
 
 echo "Compilando os arquivos Java..."
-javac -cp "sqlite-jdbc.jar:slf4j-api.jar:slf4j-simple.jar" *.java
+
+# Compila com a estrutura MVC
+javac -cp "lib/*:src/controller:src/model:src/dao:src/view" src/controller/*.java src/model/*.java src/dao/*.java src/view/*.java
 
 if [ $? -eq 0 ]; then
     echo "Compilação bem-sucedida! Iniciando a aplicação..."
@@ -16,7 +18,7 @@ if [ $? -eq 0 ]; then
     export NO_AT_BRIDGE=1
     
     # Desativa pipelines gráficos que costumam dar tela branca no XWayland
-    java -Dsun.java2d.opengl=false -Dsun.java2d.xrender=false -cp ".:sqlite-jdbc.jar:slf4j-api.jar:slf4j-simple.jar" MainApp
+    java -Dsun.java2d.opengl=false -Dsun.java2d.xrender=false -cp ".:lib/*:src" controller.MainApp
 else
     echo "Erro na compilação!"
     exit 1
