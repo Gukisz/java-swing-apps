@@ -8,34 +8,48 @@ Sistema de gestão de serviços com interface gráfica em Java Swing e banco de 
 
 ```
 login-system/
-├── MainApp.java                    # JFrame principal com CardLayout (login/cadastro)
-├── LoginPanel.java                 # Tela de login
-├── RegisterPanel.java              # Tela de cadastro
-├── ServiceManagementFrame.java     # Desktop principal com menu, toolbar e JDesktopPane (MDI)
-├── ClientInternalFrame.java        # Tela interna de Cadastro de Clientes
-├── ServiceOrderInternalFrame.java  # Tela interna de Ordem de Serviço
-├── ProdutoInternalFrame.java       # Tela interna de Cadastro de Produtos
-├── FornecedorInternalFrame.java    # Tela interna de Cadastro de Fornecedores
-├── DarkDialog.java                 # Dialogs customizados com tema escuro
-├── IconUtils.java                  # Carregador de ícones dos assets
-├── UIUtils.java                    # Estilização de componentes visuais
-├── ValidationUtils.java            # Regras de validação de formulário
-├── GhostText.java                  # Placeholder/Hint text para campos
-├── DatabaseConnection.java         # Conexão com SQLite
-├── DatabaseSetup.java              # Criação automática das tabelas
-├── User.java                       # Modelo de usuário
-├── UserDAO.java                    # Operações no banco de usuários
-├── Client.java                     # Modelo de cliente
-├── ClientDAO.java                  # Operações no banco de clientes
-├── ServiceOrder.java               # Modelo de ordem de serviço
-├── ServiceOrderDAO.java            # Operações no banco de OS
-├── Produto.java                    # Modelo de produto
-├── ProdutoDAO.java                 # Operações no banco de produtos
-├── Fornecedor.java                 # Modelo de fornecedor
-├── FornecedorDAO.java              # Operações no banco de fornecedores
-├── sqlite-jdbc.jar                 # Driver JDBC do SQLite
-├── slf4j-api.jar                   # Dependência de logging
-├── slf4j-simple.jar                # Implementação simples de logging
+├── lib/
+│   ├── sqlite-jdbc.jar             # Driver JDBC do SQLite
+│   ├── slf4j-api.jar               # Dependência de logging
+│   └── slf4j-simple.jar            # Implementação simples de logging
+├── src/
+│   ├── controller/
+│   │   ├── MainApp.java            # JFrame principal com CardLayout (login/cadastro)
+│   │   ├── DatabaseConnection.java # Conexão com SQLite
+│   │   ├── DatabaseSetup.java      # Criação automática das tabelas
+│   │   └── ValidationUtils.java    # Regras de validação de formulário
+│   ├── model/
+│   │   ├── User.java               # Modelo de usuário
+│   │   ├── Client.java             # Modelo de cliente
+│   │   ├── Product.java            # Modelo de produto
+│   │   ├── Service.java            # Modelo de serviço
+│   │   ├── ServiceOrder.java       # Modelo de ordem de serviço
+│   │   └── Supplier.java           # Modelo de fornecedor
+│   ├── dao/
+│   │   ├── UserDAO.java            # Operações no banco de usuários
+│   │   ├── ClientDAO.java          # Operações no banco de clientes
+│   │   ├── ProductDAO.java         # Operações no banco de produtos
+│   │   ├── ServiceDAO.java         # Operações no banco de serviços
+│   │   ├── ServiceOrderDAO.java    # Operações no banco de OS
+│   │   └── SupplierDAO.java        # Operações no banco de fornecedores
+│   └── view/
+│       ├── LoginPanel.java         # Tela de login
+│       ├── RegisterPanel.java      # Tela de cadastro
+│       ├── ServiceManagementFrame.java   # Desktop principal com menu, toolbar e JDesktopPane
+│       ├── ClientInternalFrame.java      # Tela interna de Cadastro de Clientes
+│       ├── ProductInternalFrame.java     # Tela interna de Cadastro de Produtos
+│       ├── ServiceInternalFrame.java     # Tela interna de Cadastro de Serviços
+│       ├── ServiceOrderInternalFrame.java # Tela interna de Ordem de Serviço
+│       ├── ConsultaClientesInternalFrame.java   # Consulta de clientes
+│       ├── ConsultaProdutosInternalFrame.java   # Consulta de produtos
+│       ├── ConsultaServicosInternalFrame.java     # Consulta de serviços
+│       ├── RelatorioClientesInternalFrame.java  # Relatório de clientes
+│       ├── RelatorioProdutosInternalFrame.java  # Relatório de produtos
+│       ├── RelatorioServicosInternalFrame.java  # Relatório de serviços
+│       ├── DarkDialog.java         # Dialogs customizados com tema escuro
+│       ├── IconUtils.java          # Carregador de ícones dos assets
+│       ├── UIUtils.java            # Estilização de componentes visuais
+│       └── GhostText.java          # Placeholder/Hint text para campos
 ├── login_system.db                 # Banco de dados gerado automaticamente
 └── run.sh                          # Script para compilar e executar
 ```
@@ -127,11 +141,11 @@ chmod +x run.sh
 ```bash
 cd /caminho/para/login-system
 
-# Compilar incluindo os JARs no classpath
-javac -cp ".:sqlite-jdbc.jar:slf4j-api.jar:slf4j-simple.jar" *.java
+# Compilar com a estrutura MVC
+javac -cp "lib/*:src/controller:src/model:src/dao:src/view" src/controller/*.java src/model/*.java src/dao/*.java src/view/*.java
 
-# Executar incluindo os JARs no classpath
-java -cp ".:sqlite-jdbc.jar:slf4j-api.jar:slf4j-simple.jar" MainApp
+# Executar
+java -Dsun.java2d.opengl=false -Dsun.java2d.xrender=false -cp ".:lib/*:src" controller.MainApp
 ```
 
 ### Opção 3: Windows (manual)
@@ -141,11 +155,11 @@ Abra o **Prompt de Comando** (`cmd`) ou **PowerShell** na pasta do projeto:
 ```cmd
 cd C:\caminho\para\login-system
 
-:: Compilar incluindo os JARs no classpath
-javac -cp .;sqlite-jdbc.jar;slf4j-api.jar;slf4j-simple.jar *.java
+:: Compilar com a estrutura MVC
+javac -cp "lib/*;src/controller;src/model;src/dao;src/view" src/controller/*.java src/model/*.java src/dao/*.java src/view/*.java
 
-:: Executar incluindo os JARs no classpath
-java -cp .;sqlite-jdbc.jar;slf4j-api.jar;slf4j-simple.jar MainApp
+:: Executar
+java -Dsun.java2d.opengl=false -Dsun.java2d.xrender=false -cp ".;lib/*;src" controller.MainApp
 ```
 
 > **Dica**: No Windows, o separador do classpath é ponto-e-vírgula (`;`), não dois-pontos (`:`).
@@ -251,27 +265,36 @@ SELECT * FROM service_orders;
 
 ---
 
-## Arquitetura
+## Arquitetura MVC
 
 ```
-MainApp (JFrame)
+controller.MainApp (JFrame)
 ├── CardLayout
-│   ├── LoginPanel  → UserDAO → SQLite
-│   └── RegisterPanel → UserDAO → SQLite
+│   ├── view.LoginPanel  → dao.UserDAO → SQLite
+│   └── view.RegisterPanel → dao.UserDAO → SQLite
 │
-└── ServiceManagementFrame (JFrame - após login)
-    ├── JMenuBar (Cadastros, Movimento, Relatório, Utilitário, Sobre, Ajuda, Janela)
-    ├── JToolBar (Clientes, Serviços, OS)
+└── view.ServiceManagementFrame (JFrame - após login)
+    ├── JMenuBar (Cadastro, Consulta, Relatório, Utilitário, Sobre, Janela)
+    ├── JToolBar (Clientes, Produtos, Serviços)
     └── JDesktopPane
-        ├── ClientInternalFrame → ClientDAO → SQLite
-        ├── ServiceOrderInternalFrame → ServiceOrderDAO → SQLite
-        ├── ProdutoInternalFrame → ProdutoDAO → SQLite
-        └── FornecedorInternalFrame → FornecedorDAO → SQLite
+        ├── view.ClientInternalFrame → dao.ClientDAO → SQLite
+        ├── view.ServiceOrderInternalFrame → dao.ServiceOrderDAO → SQLite
+        ├── view.ProductInternalFrame → dao.ProductDAO → SQLite
+        ├── view.ServiceInternalFrame → dao.ServiceDAO → SQLite
+        ├── view.ConsultaClientesInternalFrame → dao.ClientDAO → SQLite
+        ├── view.ConsultaProdutosInternalFrame → dao.ProductDAO → SQLite
+        ├── view.ConsultaServicosInternalFrame → dao.ServiceDAO → SQLite
+        ├── view.RelatorioClientesInternalFrame → dao.ClientDAO → SQLite
+        ├── view.RelatorioProdutosInternalFrame → dao.ProductDAO → SQLite
+        └── view.RelatorioServicosInternalFrame → dao.ServiceDAO → SQLite
 ```
 
-- **UserDAO / ClientDAO / ServiceOrderDAO / ProdutoDAO / FornecedorDAO**: Camada de acesso a dados com PreparedStatement
+- **model (POJOs)**: User, Client, Product, Service, ServiceOrder, Supplier
+- **dao (Data Access)**: UserDAO, ClientDAO, ProductDAO, ServiceDAO, ServiceOrderDAO, SupplierDAO — operações com PreparedStatement
+- **controller**: DatabaseConnection, DatabaseSetup, ValidationUtils
+- **view**: Todas as telas, dialogs, utilitários visuais
 - **DatabaseConnection**: Factory de conexões JDBC
-- **DatabaseSetup**: Cria as tabelas automaticamente se não existirem
+- **DatabaseSetup**: Cria as tabelas automaticamente se não existirem, com migração de colunas
 
 ---
 

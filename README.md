@@ -161,29 +161,50 @@ java-swing-apps/
 ├── dialogs/
 │   └── DialogApp.java         # Exemplos de JOptionPane com tema dark
 ├── login-system/
-│   ├── MainApp.java           # JFrame principal com CardLayout
-│   ├── LoginPanel.java        # Tela de login com foto e validações
-│   ├── RegisterPanel.java     # Tela de cadastro com validações
-│   ├── ServiceManagementFrame.java  # Desktop principal com menu e toolbar
-│   ├── ClientInternalFrame.java     # Tela interna de cadastro de clientes
-│   ├── ServiceOrderInternalFrame.java # Tela interna de ordem de serviço
-│   ├── DarkDialog.java        # Dialogs customizados com tema escuro
-│   ├── IconUtils.java         # Carregador de ícones dos assets
-│   ├── DatabaseConnection.java # Conexão com SQLite
-│   ├── DatabaseSetup.java     # Criação automática das tabelas
-│   ├── UserDAO.java           # Operações no banco de usuários
-│   ├── ClientDAO.java         # Operações no banco de clientes
-│   ├── ServiceOrderDAO.java   # Operações no banco de ordens de serviço
-│   ├── User.java              # Modelo de usuário (POJO)
-│   ├── Client.java            # Modelo de cliente (POJO)
-│   ├── ServiceOrder.java      # Modelo de ordem de serviço (POJO)
-│   ├── UIUtils.java           # Estilização de componentes visuais
-│   ├── ValidationUtils.java   # Regras de validação de formulário
-│   ├── GhostText.java         # Placeholder/Hint text para campos
+│   ├── lib/
+│   │   ├── sqlite-jdbc.jar    # Driver JDBC do SQLite
+│   │   ├── slf4j-api.jar     # Dependência de logging
+│   │   └── slf4j-simple.jar  # Implementação de logging
+│   ├── src/
+│   │   ├── controller/
+│   │   │   ├── MainApp.java            # JFrame principal com CardLayout
+│   │   │   ├── DatabaseConnection.java # Conexão com SQLite
+│   │   │   ├── DatabaseSetup.java      # Criação automática das tabelas
+│   │   │   └── ValidationUtils.java    # Regras de validação
+│   │   ├── model/
+│   │   │   ├── User.java          # Modelo de usuário
+│   │   │   ├── Client.java        # Modelo de cliente
+│   │   │   ├── Product.java       # Modelo de produto
+│   │   │   ├── Service.java       # Modelo de serviço
+│   │   │   ├── ServiceOrder.java  # Modelo de ordem de serviço
+│   │   │   └── Supplier.java      # Modelo de fornecedor
+│   │   ├── dao/
+│   │   │   ├── UserDAO.java         # Operações no banco de usuários
+│   │   │   ├── ClientDAO.java       # Operações no banco de clientes
+│   │   │   ├── ProductDAO.java      # Operações no banco de produtos
+│   │   │   ├── ServiceDAO.java      # Operações no banco de serviços
+│   │   │   ├── ServiceOrderDAO.java # Operações no banco de OS
+│   │   │   └── SupplierDAO.java     # Operações no banco de fornecedores
+│   │   └── view/
+│   │       ├── LoginPanel.java         # Tela de login
+│   │       ├── RegisterPanel.java      # Tela de cadastro
+│   │       ├── ServiceManagementFrame.java        # Desktop principal MDI
+│   │       ├── ClientInternalFrame.java           # Cadastro de clientes
+│   │       ├── ProductInternalFrame.java          # Cadastro de produtos
+│   │       ├── ServiceInternalFrame.java          # Cadastro de serviços
+│   │       ├── ServiceOrderInternalFrame.java     # Cadastro de OS
+│   │       ├── ConsultaClientesInternalFrame.java  # Consulta de clientes
+│   │       ├── ConsultaProdutosInternalFrame.java  # Consulta de produtos
+│   │       ├── ConsultaServicosInternalFrame.java  # Consulta de serviços
+│   │       ├── RelatorioClientesInternalFrame.java # Relatório de clientes
+│   │       ├── RelatorioProdutosInternalFrame.java # Relatório de produtos
+│   │       ├── RelatorioServicosInternalFrame.java # Relatório de serviços
+│   │       ├── DarkDialog.java       # Dialogs customizados
+│   │       ├── IconUtils.java       # Carregador de ícones
+│   │       ├── UIUtils.java         # Estilização de componentes
+│   │       └── GhostText.java       # Placeholder/Hint text
+│   ├── login_system.db        # Banco de dados gerado automaticamente
 │   ├── run.sh                 # Script para compilar e executar
-│   ├── sqlite-jdbc.jar        # Driver JDBC do SQLite
-│   ├── slf4j-api.jar          # Dependência de logging
-│   ├── slf4j-simple.jar       # Implementação de logging
 │   └── README.md              # Documentação detalhada do sistema
 ├── README.md                  # Este arquivo
 └── .gitignore                 # Ignora .class, .db e .log
@@ -214,12 +235,12 @@ java-swing-apps/
 3. Ou compile e execute manualmente:
    ```bash
    # Linux/Mac
-   javac -cp ".:sqlite-jdbc.jar:slf4j-api.jar:slf4j-simple.jar" *.java
-   java -cp ".:sqlite-jdbc.jar:slf4j-api.jar:slf4j-simple.jar" MainApp
+   javac -cp "lib/*:src/controller:src/model:src/dao:src/view" src/controller/*.java src/model/*.java src/dao/*.java src/view/*.java
+   java -Dsun.java2d.opengl=false -Dsun.java2d.xrender=false -cp ".:lib/*:src" controller.MainApp
    
    # Windows
-   javac -cp ".;sqlite-jdbc.jar;slf4j-api.jar;slf4j-simple.jar" *.java
-   java -cp ".;sqlite-jdbc.jar;slf4j-api.jar;slf4j-simple.jar" MainApp
+   javac -cp "lib/*;src/controller;src/model;src/dao;src/view" src/controller/*.java src/model/*.java src/dao/*.java src/view/*.java
+   java -Dsun.java2d.opengl=false -Dsun.java2d.xrender=false -cp ".;lib/*;src" controller.MainApp
    ```
 
 4. Consulte o banco de dados via terminal:
