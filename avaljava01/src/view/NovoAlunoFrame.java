@@ -15,6 +15,9 @@ public class NovoAlunoFrame extends JInternalFrame {
     private JTable table;
     private DefaultTableModel model;
     private List<Aluno> alunos = new ArrayList<>();
+    private JButton btnAdicionar, btnEditar, btnCancelar;
+
+    private int editandoIndex = -1; // -1 = modo adicionar, >=0 = índice do aluno sendo editado
 
     private static final Color BG = Color.BLACK;
     private static final Color FG = Color.WHITE;
@@ -25,12 +28,12 @@ public class NovoAlunoFrame extends JInternalFrame {
 
     public NovoAlunoFrame() {
         initComponents();
-        setTitle("Novo Aluno");
+        setTitle("Cadastro de Alunos");
         setClosable(true);
         setIconifiable(true);
         setResizable(true);
         setMaximizable(true);
-        setSize(650, 450);
+        setSize(650, 480);
         setLocation(30, 30);
         setMinimumSize(new Dimension(500, 350));
     }
@@ -111,6 +114,15 @@ public class NovoAlunoFrame extends JInternalFrame {
         table.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 13));
         table.setRowHeight(26);
 
+        // Duplo clique para editar
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if (evt.getClickCount() == 2) {
+                    carregarParaEdicao();
+                }
+            }
+        });
+
         JScrollPane scroll = new JScrollPane(table);
         scroll.getViewport().setBackground(BG);
         scroll.setBorder(BorderFactory.createLineBorder(ACCENT));
@@ -123,14 +135,23 @@ public class NovoAlunoFrame extends JInternalFrame {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
         panel.setBackground(BG);
 
-        JButton btnAdicionar = createActionButton("Adicionar", new Color(40, 100, 40));
-        btnAdicionar.addActionListener(e -> adicionarAluno());
+        btnAdicionar = createActionButton("Adicionar", new Color(40, 100, 40));
+        btnAdicionar.addActionListener(e -> salvarAluno());
+
+        btnEditar = createActionButton("Editar", new Color(70, 70, 180));
+        btnEditar.addActionListener(e -> carregarParaEdicao());
 
         JButton btnExcluir = createActionButton("Excluir", new Color(140, 40, 40));
         btnExcluir.addActionListener(e -> excluirAluno());
 
+        btnCancelar = createActionButton("Cancelar", new Color(100, 100, 100));
+        btnCancelar.addActionListener(e -> cancelarEdicao());
+        btnCancelar.setVisible(false);
+
         panel.add(btnAdicionar);
+        panel.add(btnEditar);
         panel.add(btnExcluir);
+        panel.add(btnCancelar);
 
         return panel;
     }
@@ -156,7 +177,7 @@ public class NovoAlunoFrame extends JInternalFrame {
         return btn;
     }
 
-    private void adicionarAluno() {
+    private void salvarAluno() {
         String idStr = idField.getText().trim();
         String nome = nomeField.getText().trim();
         String turma = turmaField.getText().trim();
@@ -175,12 +196,73 @@ public class NovoAlunoFrame extends JInternalFrame {
             return;
         }
 
-        Aluno aluno = new Aluno(id, nome, turma, email);
-        alunos.add(aluno);
-        ordenarPorNome();
-        atualizarTabela();
+        if (editandoIndex >= 0) {
+            // Modo edição
+            Aluno aluno = alunos.get(editandoIndex);
+            aluno.setId(id);
+            aluno.setNome(nome);
+            aluno.setTurma(turma);
+            aluno.setEmail(email);
+            ordenarPorNome();
+            atualizarTabela();
+            limparCampos();
+            cancelarEdicao();
+            DarkDialog.showInfo(this, "Sucesso", "Aluno atualizado com sucesso!");
+        } else {
+            // Modo adicionar
+            Aluno aluno = new Aluno(id, nome, turma, email);
+            alunos.add(aluno);
+            ordenarPorNome();
+            atualizarTabela();
+            limparCampos();
+            DarkDialog.showInfo(this, "Sucesso", "Aluno cadastrado com sucesso!");
+        }
+    }
+
+    private void carregarParaEdicao() {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow == -1) {
+            DarkDialog.showWarning(this, "Atenção", "Selecione um aluno na tabela para editar.");
+            return;
+        }
+
+        // Encontra o aluno correspondente na lista ordenada
+        // Como a tabela está ordenada por nome, precisamos encontrar pelo conteúdo da linha
+        int id = (int) model.getValueAt(selectedRow, 0);
+        String nome = (String) model.getValueAt(selectedRow, 1);
+        String turma = (String) model.getValueAt(selectedRow, 2);
+        String email = (String) model.getValueAt(selectedRow, 3);
+
+        // Encontra o índice real na lista
+        for (int i = 0; i < alunos.size(); i++) {
+            Aluno a = alunos.get(i);
+            if (a.getId() == id && a.getNome().equals(nome) && a.getTurma().equals(turma) && a.getEmail().equals(email)) {
+                editandoIndex = i;
+                break;
+            }
+        }
+
+        if (editandoIndex >= 0) {
+            Aluno aluno = alunos.get(editandoIndex);
+            idField.setText(String.valueOf(aluno.getId()));
+            nomeField.setText(aluno.getNome());
+            turmaField.setText(aluno.getTurma());
+            emailField.setText(aluno.getEmail());
+
+            btnAdicionar.setText("Salvar");
+            btnAdicionar.setBackground(new Color(40, 100, 40));
+            btnCancelar.setVisible(true);
+            setTitle("Cadastro de Alunos - Editando");
+        }
+    }
+
+    private void cancelarEdicao() {
+        editandoIndex = -1;
         limparCampos();
-        DarkDialog.showInfo(this, "Sucesso", "Aluno cadastrado com sucesso!");
+        btnAdicionar.setText("Adicionar");
+        btnAdicionar.setBackground(new Color(40, 100, 40));
+        btnCancelar.setVisible(false);
+        setTitle("Cadastro de Alunos");
     }
 
     private void excluirAluno() {
@@ -193,6 +275,8 @@ public class NovoAlunoFrame extends JInternalFrame {
         if (DarkDialog.showConfirm(this, "Confirmar", "Deseja realmente excluir este aluno?")) {
             alunos.remove(selectedRow);
             atualizarTabela();
+            limparCampos();
+            cancelarEdicao();
             DarkDialog.showInfo(this, "Sucesso", "Aluno excluído com sucesso!");
         }
     }

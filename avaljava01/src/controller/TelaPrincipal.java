@@ -56,7 +56,7 @@ public class TelaPrincipal extends JFrame {
         menuArquivo.add(miNovo);
 
         JMenuItem miEditar = createMenuItem("Editar");
-        miEditar.addActionListener(e -> DarkDialog.showInfo(this, "Editar", "Função Editar em desenvolvimento."));
+        miEditar.addActionListener(e -> abrirNovoAluno());
         menuArquivo.add(miEditar);
         menuBar.add(menuArquivo);
 
