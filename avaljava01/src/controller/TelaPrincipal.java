@@ -36,8 +36,14 @@ public class TelaPrincipal extends JFrame {
     }
 
     private void initComponents() {
-        JPanel contentPane = new JPanel(new BorderLayout());
-        contentPane.setBackground(Color.BLACK);
+        JPanel contentPane = new JPanel(new BorderLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                g.setColor(Color.BLACK);
+                g.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        contentPane.setOpaque(false);
         setContentPane(contentPane);
 
         JLabel lbl = new JLabel("Sistema de Cadastro de Alunos", SwingConstants.CENTER);
@@ -116,11 +122,8 @@ public class TelaPrincipal extends JFrame {
     }
 
     public static void main(String[] args) {
-        try {
-            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        SwingUtilities.invokeLater(() -> new TelaPrincipal().setVisible(true));
+        SwingUtilities.invokeLater(() -> {
+            new TelaPrincipal().setVisible(true);
+        });
     }
 }
