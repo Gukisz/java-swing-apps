@@ -22,12 +22,28 @@ Repositório de estudos com aplicações desktop desenvolvidas em **Java Swing**
 | Projeto | Pasta | Descrição | Destaques |
 |---------|-------|-----------|-----------|
 | **Service Management System** | [`login-system/`](login-system/) | Sistema de Gestão de Serviços com SQLite | Login, desktop MDI, CRUD de clientes e ordens de serviço, tema escuro |
+| **Avaliação Java Swing** | [`avaljava01/`](avaljava01/) | Sistema de Cadastro de Alunos | MenuBar, JTable, formulário, dialogs, tema escuro |
 | **Calculator** | [`calculator/`](calculator/) | Calculadora visual estilizada | Design rosa pastel, operações básicas, display customizado |
 | **Dialogs** | [`dialogs/`](dialogs/) | Demonstração de diálogos Swing | Erro, aviso e confirmação, tema dark |
 
 ---
 
 ## ✨ Funcionalidades por Projeto
+
+### Avaliação Java Swing 01
+
+#### MenuBar Completa
+- **Arquivo**: Novo (abre tela de cadastro), Editar
+- **Editar**: Desfazer, Refazer
+- **Exibir**: Zoom, separador, Régua
+- **Ajuda**: Sobre o Sistema (mensagem com versão)
+
+#### Tela Novo Aluno
+- **Formulário**: ID, Nome, Turma, E-mail
+- **JTable**: Exibe alunos cadastrados com ordenação por nome
+- **Botão Adicionar**: Cadastra aluno, limpa campos, mostra mensagem de sucesso
+- **Botão Excluir**: Remove aluno selecionado com confirmação
+- **Tema escuro**: Fundo preto, campos cinzas, texto branco
 
 ### Service Management System
 
@@ -155,6 +171,16 @@ java-swing-apps/
 ├── assets/
 │   ├── Icones/                # Ícones para o sistema de gestão
 │   └── usericon.png           # Ícone de usuário para o login
+├── avaljava01/
+│   ├── src/
+│   │   ├── controller/
+│   │   │   └── TelaPrincipal.java    # JFrame principal com MenuBar
+│   │   ├── model/
+│   │   │   └── Aluno.java            # Classe modelo (POJO)
+│   │   └── view/
+│   │       ├── NovoAlunoFrame.java   # Tela de cadastro com JTable
+│   │       └── DarkDialog.java       # Dialogs customizados
+│   └── README.md
 ├── calculator/
 │   ├── Main.java              # Calculadora com design rosa pastel
 │   └── README.md              # Documentação da calculadora
@@ -256,6 +282,24 @@ java-swing-apps/
    ```
 
 > Veja a documentação completa em [`login-system/README.md`](login-system/).
+
+### Avaliação Java Swing 01
+
+1. Navegue até a pasta do projeto:
+   ```bash
+   cd java-swing-apps/avaljava01
+   ```
+
+2. Compile e execute:
+   ```bash
+   # Linux/Mac
+   javac -cp "src/controller:src/model:src/view" src/controller/*.java src/model/*.java src/view/*.java
+   java -cp ".:src/controller:src/model:src/view" controller.TelaPrincipal
+
+   # Windows
+   javac -cp "src/controller;src/model;src/view" src\controller\*.java src\model\*.java src\view\*.java
+   java -cp ".;src/controller;src/model;src/view" controller.TelaPrincipal
+   ```
 
 ### Calculator
 
