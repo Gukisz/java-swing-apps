@@ -180,6 +180,7 @@ java-swing-apps/
 │   │   └── view/
 │   │       ├── NovoAlunoFrame.java   # Tela de cadastro com JTable
 │   │       └── DarkDialog.java       # Dialogs customizados
+│   ├── run.sh                        # Script para compilar e executar
 │   └── README.md
 ├── calculator/
 │   ├── Main.java              # Calculadora com design rosa pastel
@@ -290,11 +291,19 @@ java-swing-apps/
    cd java-swing-apps/avaljava01
    ```
 
-2. Compile e execute:
+2. Usando o script (Linux/Mac):
    ```bash
-   # Linux/Mac
+   chmod +x run.sh
+   ./run.sh
+   ```
+
+3. Ou compile e execute manualmente:
+   ```bash
+   # Linux/Mac (com flags de compatibilidade Wayland)
    javac -cp "src/controller:src/model:src/view" src/controller/*.java src/model/*.java src/view/*.java
-   java -cp "src" controller.TelaPrincipal
+   export _JAVA_AWT_WM_NONREPARENTING=1
+   export NO_AT_BRIDGE=1
+   java -Dsun.java2d.opengl=false -Dsun.java2d.xrender=false -cp "src" controller.TelaPrincipal
 
    # Windows
    javac -cp "src/controller;src/model;src/view" src\controller\*.java src\model\*.java src\view\*.java

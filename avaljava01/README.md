@@ -14,6 +14,7 @@ avaljava01/
 │   └── view/
 │       ├── NovoAlunoFrame.java   # Tela de cadastro com formulário e JTable
 │       └── DarkDialog.java       # Dialogs customizados com tema escuro
+├── run.sh                        # Script de compilação/execução (Linux)
 └── README.md
 ```
 
@@ -28,7 +29,16 @@ avaljava01/
 
 ## Como Executar
 
-### Linux/Mac
+### Linux / Mac
+
+Usando o script (recomendado):
+
+```bash
+cd avaljava01
+./run.sh
+```
+
+Ou manualmente:
 
 ```bash
 cd avaljava01
@@ -36,8 +46,10 @@ cd avaljava01
 # Compilar
 javac -cp "src/controller:src/model:src/view" src/controller/*.java src/model/*.java src/view/*.java
 
-# Executar
-java -cp "src" controller.TelaPrincipal
+# Executar (com flags de compatibilidade Wayland)
+export _JAVA_AWT_WM_NONREPARENTING=1
+export NO_AT_BRIDGE=1
+java -Dsun.java2d.opengl=false -Dsun.java2d.xrender=false -cp "src" controller.TelaPrincipal
 ```
 
 ### Windows
@@ -46,7 +58,7 @@ java -cp "src" controller.TelaPrincipal
 cd avaljava01
 
 :: Compilar
-javac -cp "src/controller;src/model;src/view" src\controller\*.java src\model\*.java src\view\*.java
+javac -cp "src\controller;src\model;src\view" src\controller\*.java src\model\*.java src\view\*.java
 
 :: Executar
 java -cp "src" controller.TelaPrincipal
