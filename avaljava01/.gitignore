@@ -1,0 +1,5 @@
+# Arquivos compilados
+*.class
+
+# Logs
+*.log
