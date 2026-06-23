@@ -139,6 +139,7 @@ public class NovoAlunoFrame extends JInternalFrame {
             return;
         }
 
+        // checa ID duplicado
         if (alunoDAO.idExists(id)) {
             DarkDialog.showError(this, "Erro", "Já existe um aluno com este ID. Use outro ID.");
             return;

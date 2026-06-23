@@ -5,6 +5,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+// DAO - operações no banco
 public class AlunoDAO {
 
     public void insert(Aluno aluno) {
@@ -46,6 +47,7 @@ public class AlunoDAO {
         }
     }
 
+    // select all ordenado por nome
     public List<Aluno> findAll() {
         List<Aluno> alunos = new ArrayList<>();
         String sql = "SELECT * FROM alunos ORDER BY nome COLLATE NOCASE";
@@ -67,6 +69,7 @@ public class AlunoDAO {
         return alunos;
     }
 
+    // check se ID existe
     public boolean idExists(int id) {
         String sql = "SELECT 1 FROM alunos WHERE id = ?";
         try (Connection conn = DatabaseConnection.getConnection();

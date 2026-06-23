@@ -14,6 +14,7 @@ public class EditarAlunoFrame extends JInternalFrame {
     private DefaultTableModel model;
     private AlunoDAO alunoDAO;
 
+    // -1 = ninguém selecionado
     private int editandoId = -1;
 
     private static final Color BG = Color.BLACK;
@@ -70,6 +71,7 @@ public class EditarAlunoFrame extends JInternalFrame {
         table.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 13));
         table.setRowHeight(26);
 
+        // double click na tabela carrega pra editar
         table.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 if (evt.getClickCount() == 2) {
@@ -97,7 +99,8 @@ public class EditarAlunoFrame extends JInternalFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         idField = addFormRow(panel, gbc, 0, "ID:", new JTextField(10));
-        idField.setEditable(false); // ID não pode ser alterado na edição
+        // ID é travado na edição
+        idField.setEditable(false);
         idField.setBackground(new Color(50, 50, 50));
 
         nomeField = addFormRow(panel, gbc, 1, "Nome:", new JTextField(25));

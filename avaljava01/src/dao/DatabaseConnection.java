@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+// sqlite conn + cria tabela se precisar
 public class DatabaseConnection {
     private static final String DB_URL = "jdbc:sqlite:avaljava01.db";
 

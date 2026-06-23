@@ -16,7 +16,7 @@ public class TelaPrincipal extends JFrame {
         setMinimumSize(new Dimension(700, 500));
         setLocationRelativeTo(null);
 
-        // Inicializa banco de dados
+        // init do banco sqlite
         DatabaseConnection.init();
 
         initComponents();
@@ -26,10 +26,12 @@ public class TelaPrincipal extends JFrame {
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(Color.BLACK);
 
+        // desktop pane - área onde as janelas internas ficam
         desktopPane = new JDesktopPane();
         desktopPane.setBackground(Color.BLACK);
         mainPanel.add(desktopPane, BorderLayout.CENTER);
 
+        // status bar na parte de baixo
         JPanel statusBar = new JPanel(new BorderLayout());
         statusBar.setBackground(new Color(30, 30, 30));
         statusBar.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(100, 100, 100)));
@@ -48,7 +50,6 @@ public class TelaPrincipal extends JFrame {
         menuBar.setBackground(new Color(30, 30, 30));
         menuBar.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(100, 100, 100)));
 
-        // Menu Arquivo
         JMenu menuArquivo = createMenu("Arquivo");
         JMenuItem miNovo = createMenuItem("Novo");
         miNovo.addActionListener(e -> abrirFrame(new NovoAlunoFrame()));
@@ -59,7 +60,6 @@ public class TelaPrincipal extends JFrame {
         menuArquivo.add(miEditar);
         menuBar.add(menuArquivo);
 
-        // Menu Editar
         JMenu menuEditar = createMenu("Editar");
         JMenuItem miDesfazer = createMenuItem("Desfazer");
         miDesfazer.addActionListener(e -> DarkDialog.showInfo(this, "Desfazer", "Função Desfazer em desenvolvimento."));
@@ -70,7 +70,6 @@ public class TelaPrincipal extends JFrame {
         menuEditar.add(miRefazer);
         menuBar.add(menuEditar);
 
-        // Menu Exibir
         JMenu menuExibir = createMenu("Exibir");
         JMenuItem miZoom = createMenuItem("Zoom");
         miZoom.addActionListener(e -> DarkDialog.showInfo(this, "Zoom", "Função Zoom em desenvolvimento."));
@@ -82,7 +81,6 @@ public class TelaPrincipal extends JFrame {
         menuExibir.add(miRegua);
         menuBar.add(menuExibir);
 
-        // Menu Ajuda
         JMenu menuAjuda = createMenu("Ajuda");
         JMenuItem miSobre = createMenuItem("Sobre o Sistema");
         miSobre.addActionListener(e -> DarkDialog.showInfo(this, "Sobre",
