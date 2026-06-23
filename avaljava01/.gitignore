@@ -3,3 +3,6 @@
 
 # Logs
 *.log
+
+# Banco de dados SQLite
+*.db

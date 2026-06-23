@@ -1,6 +1,7 @@
 package controller;
 
 import view.*;
+import dao.DatabaseConnection;
 import javax.swing.*;
 import java.awt.*;
 
@@ -15,20 +16,20 @@ public class TelaPrincipal extends JFrame {
         setMinimumSize(new Dimension(700, 500));
         setLocationRelativeTo(null);
 
+        // Inicializa banco de dados
+        DatabaseConnection.init();
+
         initComponents();
     }
 
     private void initComponents() {
-        // Painel principal com BorderLayout
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(Color.BLACK);
 
-        // DesktopPane (área de trabalho MDI) com fundo preto
         desktopPane = new JDesktopPane();
         desktopPane.setBackground(Color.BLACK);
         mainPanel.add(desktopPane, BorderLayout.CENTER);
 
-        // Barra de status na parte inferior
         JPanel statusBar = new JPanel(new BorderLayout());
         statusBar.setBackground(new Color(30, 30, 30));
         statusBar.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(100, 100, 100)));
@@ -39,8 +40,6 @@ public class TelaPrincipal extends JFrame {
         mainPanel.add(statusBar, BorderLayout.SOUTH);
 
         setContentPane(mainPanel);
-
-        // MenuBar
         setJMenuBar(createMenuBar());
     }
 
@@ -52,23 +51,15 @@ public class TelaPrincipal extends JFrame {
         // Menu Arquivo
         JMenu menuArquivo = createMenu("Arquivo");
         JMenuItem miNovo = createMenuItem("Novo");
-        miNovo.addActionListener(e -> abrirNovoAluno());
+        miNovo.addActionListener(e -> abrirFrame(new NovoAlunoFrame()));
         menuArquivo.add(miNovo);
-
-        JMenuItem miEditar = createMenuItem("Editar");
-        miEditar.addActionListener(e -> abrirNovoAluno());
-        menuArquivo.add(miEditar);
         menuBar.add(menuArquivo);
 
         // Menu Editar
         JMenu menuEditar = createMenu("Editar");
-        JMenuItem miDesfazer = createMenuItem("Desfazer");
-        miDesfazer.addActionListener(e -> DarkDialog.showInfo(this, "Desfazer", "Função Desfazer em desenvolvimento."));
-        menuEditar.add(miDesfazer);
-
-        JMenuItem miRefazer = createMenuItem("Refazer");
-        miRefazer.addActionListener(e -> DarkDialog.showInfo(this, "Refazer", "Função Refazer em desenvolvimento."));
-        menuEditar.add(miRefazer);
+        JMenuItem miEditarAluno = createMenuItem("Editar Aluno");
+        miEditarAluno.addActionListener(e -> abrirFrame(new EditarAlunoFrame()));
+        menuEditar.add(miEditarAluno);
         menuBar.add(menuEditar);
 
         // Menu Exibir
@@ -94,8 +85,7 @@ public class TelaPrincipal extends JFrame {
         return menuBar;
     }
 
-    private void abrirNovoAluno() {
-        NovoAlunoFrame frame = new NovoAlunoFrame();
+    private void abrirFrame(JInternalFrame frame) {
         desktopPane.add(frame);
         try {
             frame.setSelected(true);

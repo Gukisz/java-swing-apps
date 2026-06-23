@@ -8,8 +8,8 @@ cd "$DIR"
 
 echo "Compilando os arquivos Java..."
 
-# Compila com a estrutura MVC
-javac -cp "src/controller:src/model:src/view" src/controller/*.java src/model/*.java src/view/*.java
+# Compila com a estrutura MVC (incluindo lib/ para SQLite)
+javac -cp "lib/*:src/controller:src/model:src/view:src/dao" src/controller/*.java src/model/*.java src/view/*.java src/dao/*.java
 
 if [ $? -eq 0 ]; then
     echo "Compilação bem-sucedida! Iniciando a aplicação..."
@@ -18,7 +18,7 @@ if [ $? -eq 0 ]; then
     export NO_AT_BRIDGE=1
     
     # Desativa pipelines gráficos que costumam dar tela branca no XWayland
-    java -Dsun.java2d.opengl=false -Dsun.java2d.xrender=false -cp "src" controller.TelaPrincipal
+    java --enable-native-access=ALL-UNNAMED -Dsun.java2d.opengl=false -Dsun.java2d.xrender=false -cp "lib/*:src" controller.TelaPrincipal
 else
     echo "Erro na compilação!"
     exit 1

@@ -1,23 +1,14 @@
 package view;
 
 import model.Aluno;
+import dao.AlunoDAO;
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 public class NovoAlunoFrame extends JInternalFrame {
 
     private JTextField idField, nomeField, turmaField, emailField;
-    private JTable table;
-    private DefaultTableModel model;
-    private List<Aluno> alunos = new ArrayList<>();
-    private JButton btnAdicionar, btnEditar, btnCancelar;
-
-    private int editandoIndex = -1; // -1 = modo adicionar, >=0 = índice do aluno sendo editado
+    private AlunoDAO alunoDAO;
 
     private static final Color BG = Color.BLACK;
     private static final Color FG = Color.WHITE;
@@ -27,15 +18,15 @@ public class NovoAlunoFrame extends JInternalFrame {
     private static final Font FIELD_FONT = new Font("SansSerif", Font.PLAIN, 14);
 
     public NovoAlunoFrame() {
+        alunoDAO = new AlunoDAO();
         initComponents();
-        setTitle("Cadastro de Alunos");
+        setTitle("Cadastrar Aluno");
         setClosable(true);
         setIconifiable(true);
         setResizable(true);
-        setMaximizable(true);
-        setSize(650, 480);
+        setSize(500, 380);
         setLocation(30, 30);
-        setMinimumSize(new Dimension(500, 350));
+        setMinimumSize(new Dimension(400, 300));
     }
 
     private void initComponents() {
@@ -44,8 +35,7 @@ public class NovoAlunoFrame extends JInternalFrame {
         content.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         setContentPane(content);
 
-        content.add(createFormPanel(), BorderLayout.NORTH);
-        content.add(createTablePanel(), BorderLayout.CENTER);
+        content.add(createFormPanel(), BorderLayout.CENTER);
         content.add(createButtonPanel(), BorderLayout.SOUTH);
     }
 
@@ -56,7 +46,7 @@ public class NovoAlunoFrame extends JInternalFrame {
                 0, 0, new Font("SansSerif", Font.BOLD, 14), FG));
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.insets = new Insets(8, 8, 8, 8);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         idField = addFormRow(panel, gbc, 0, "ID:", new JTextField(10));
@@ -93,65 +83,18 @@ public class NovoAlunoFrame extends JInternalFrame {
                 BorderFactory.createEmptyBorder(6, 8, 6, 8)));
     }
 
-    private JPanel createTablePanel() {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBackground(BG);
-        panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(ACCENT), "Alunos Cadastrados",
-                0, 0, new Font("SansSerif", Font.BOLD, 14), FG));
-
-        model = new DefaultTableModel(new String[]{"ID", "Nome", "Turma", "E-mail"}, 0) {
-            public boolean isCellEditable(int row, int column) { return false; }
-        };
-        table = new JTable(model);
-        table.setBackground(FIELD_BG);
-        table.setForeground(FG);
-        table.setGridColor(ACCENT);
-        table.setSelectionBackground(new Color(60, 60, 60));
-        table.setSelectionForeground(FG);
-        table.setFont(FIELD_FONT);
-        table.getTableHeader().setBackground(new Color(40, 40, 40));
-        table.getTableHeader().setForeground(FG);
-        table.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 13));
-        table.setRowHeight(26);
-
-        // Duplo clique para editar
-        table.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                if (evt.getClickCount() == 2) {
-                    carregarParaEdicao();
-                }
-            }
-        });
-
-        JScrollPane scroll = new JScrollPane(table);
-        scroll.getViewport().setBackground(BG);
-        scroll.setBorder(BorderFactory.createLineBorder(ACCENT));
-        panel.add(scroll, BorderLayout.CENTER);
-
-        return panel;
-    }
-
     private JPanel createButtonPanel() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
         panel.setBackground(BG);
 
-        btnAdicionar = createActionButton("Adicionar", new Color(40, 100, 40));
-        btnAdicionar.addActionListener(e -> salvarAluno());
+        JButton btnAdicionar = createActionButton("Adicionar", new Color(40, 100, 40));
+        btnAdicionar.addActionListener(e -> adicionarAluno());
 
-        btnEditar = createActionButton("Editar", new Color(70, 70, 180));
-        btnEditar.addActionListener(e -> carregarParaEdicao());
-
-        JButton btnExcluir = createActionButton("Excluir", new Color(140, 40, 40));
-        btnExcluir.addActionListener(e -> excluirAluno());
-
-        btnCancelar = createActionButton("Cancelar", new Color(100, 100, 100));
-        btnCancelar.addActionListener(e -> cancelarEdicao());
-        btnCancelar.setVisible(false);
+        JButton btnLimpar = createActionButton("Limpar", new Color(100, 100, 100));
+        btnLimpar.addActionListener(e -> limparCampos());
 
         panel.add(btnAdicionar);
-        panel.add(btnEditar);
-        panel.add(btnExcluir);
-        panel.add(btnCancelar);
+        panel.add(btnLimpar);
 
         return panel;
     }
@@ -177,7 +120,7 @@ public class NovoAlunoFrame extends JInternalFrame {
         return btn;
     }
 
-    private void salvarAluno() {
+    private void adicionarAluno() {
         String idStr = idField.getText().trim();
         String nome = nomeField.getText().trim();
         String turma = turmaField.getText().trim();
@@ -196,100 +139,15 @@ public class NovoAlunoFrame extends JInternalFrame {
             return;
         }
 
-        if (editandoIndex >= 0) {
-            // Modo edição
-            Aluno aluno = alunos.get(editandoIndex);
-            aluno.setId(id);
-            aluno.setNome(nome);
-            aluno.setTurma(turma);
-            aluno.setEmail(email);
-            ordenarPorNome();
-            atualizarTabela();
-            limparCampos();
-            cancelarEdicao();
-            DarkDialog.showInfo(this, "Sucesso", "Aluno atualizado com sucesso!");
-        } else {
-            // Modo adicionar
-            Aluno aluno = new Aluno(id, nome, turma, email);
-            alunos.add(aluno);
-            ordenarPorNome();
-            atualizarTabela();
-            limparCampos();
-            DarkDialog.showInfo(this, "Sucesso", "Aluno cadastrado com sucesso!");
-        }
-    }
-
-    private void carregarParaEdicao() {
-        int selectedRow = table.getSelectedRow();
-        if (selectedRow == -1) {
-            DarkDialog.showWarning(this, "Atenção", "Selecione um aluno na tabela para editar.");
+        if (alunoDAO.idExists(id)) {
+            DarkDialog.showError(this, "Erro", "Já existe um aluno com este ID. Use outro ID.");
             return;
         }
 
-        // Encontra o aluno correspondente na lista ordenada
-        // Como a tabela está ordenada por nome, precisamos encontrar pelo conteúdo da linha
-        int id = (int) model.getValueAt(selectedRow, 0);
-        String nome = (String) model.getValueAt(selectedRow, 1);
-        String turma = (String) model.getValueAt(selectedRow, 2);
-        String email = (String) model.getValueAt(selectedRow, 3);
-
-        // Encontra o índice real na lista
-        for (int i = 0; i < alunos.size(); i++) {
-            Aluno a = alunos.get(i);
-            if (a.getId() == id && a.getNome().equals(nome) && a.getTurma().equals(turma) && a.getEmail().equals(email)) {
-                editandoIndex = i;
-                break;
-            }
-        }
-
-        if (editandoIndex >= 0) {
-            Aluno aluno = alunos.get(editandoIndex);
-            idField.setText(String.valueOf(aluno.getId()));
-            nomeField.setText(aluno.getNome());
-            turmaField.setText(aluno.getTurma());
-            emailField.setText(aluno.getEmail());
-
-            btnAdicionar.setText("Salvar");
-            btnAdicionar.setBackground(new Color(40, 100, 40));
-            btnCancelar.setVisible(true);
-            setTitle("Cadastro de Alunos - Editando");
-        }
-    }
-
-    private void cancelarEdicao() {
-        editandoIndex = -1;
+        Aluno aluno = new Aluno(id, nome, turma, email);
+        alunoDAO.insert(aluno);
         limparCampos();
-        btnAdicionar.setText("Adicionar");
-        btnAdicionar.setBackground(new Color(40, 100, 40));
-        btnCancelar.setVisible(false);
-        setTitle("Cadastro de Alunos");
-    }
-
-    private void excluirAluno() {
-        int selectedRow = table.getSelectedRow();
-        if (selectedRow == -1) {
-            DarkDialog.showWarning(this, "Atenção", "Selecione um aluno na tabela para excluir.");
-            return;
-        }
-
-        if (DarkDialog.showConfirm(this, "Confirmar", "Deseja realmente excluir este aluno?")) {
-            alunos.remove(selectedRow);
-            atualizarTabela();
-            limparCampos();
-            cancelarEdicao();
-            DarkDialog.showInfo(this, "Sucesso", "Aluno excluído com sucesso!");
-        }
-    }
-
-    private void ordenarPorNome() {
-        Collections.sort(alunos, Comparator.comparing(Aluno::getNome, String.CASE_INSENSITIVE_ORDER));
-    }
-
-    private void atualizarTabela() {
-        model.setRowCount(0);
-        for (Aluno a : alunos) {
-            model.addRow(new Object[]{a.getId(), a.getNome(), a.getTurma(), a.getEmail()});
-        }
+        DarkDialog.showInfo(this, "Sucesso", "Aluno cadastrado com sucesso!");
     }
 
     private void limparCampos() {

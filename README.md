@@ -22,7 +22,7 @@ Repositório de estudos com aplicações desktop desenvolvidas em **Java Swing**
 | Projeto | Pasta | Descrição | Destaques |
 |---------|-------|-----------|-----------|
 | **Service Management System** | [`login-system/`](login-system/) | Sistema de Gestão de Serviços com SQLite | Login, desktop MDI, CRUD de clientes e ordens de serviço, tema escuro |
-| **Avaliação Java Swing** | [`avaljava01/`](avaljava01/) | Sistema de Cadastro de Alunos | MenuBar, JTable, formulário, dialogs, tema escuro |
+| **Avaliação Java Swing** | [`avaljava01/`](avaljava01/) | Sistema de Cadastro de Alunos com SQLite | MenuBar, MDI, CRUD separado (cadastro vs edição), SQLite, tema escuro |
 | **Calculator** | [`calculator/`](calculator/) | Calculadora visual estilizada | Design rosa pastel, operações básicas, display customizado |
 | **Dialogs** | [`dialogs/`](dialogs/) | Demonstração de diálogos Swing | Erro, aviso e confirmação, tema dark |
 
@@ -33,17 +33,31 @@ Repositório de estudos com aplicações desktop desenvolvidas em **Java Swing**
 ### Avaliação Java Swing 01
 
 #### MenuBar Completa
-- **Arquivo**: Novo (abre tela de cadastro), Editar
-- **Editar**: Desfazer, Refazer
+- **Arquivo**: Novo (abre tela de cadastro)
+- **Editar**: Editar Aluno (abre tela de edição/exclusão)
 - **Exibir**: Zoom, separador, Régua
 - **Ajuda**: Sobre o Sistema (mensagem com versão)
 
-#### Tela Novo Aluno
+#### Tela Cadastrar Aluno (apenas cadastro)
 - **Formulário**: ID, Nome, Turma, E-mail
-- **JTable**: Exibe alunos cadastrados com ordenação por nome
-- **Botão Adicionar**: Cadastra aluno, limpa campos, mostra mensagem de sucesso
-- **Botão Excluir**: Remove aluno selecionado com confirmação
-- **Tema escuro**: Fundo preto, campos cinzas, texto branco
+- **Botão Adicionar**: Salva no banco SQLite
+- **Botão Limpar**: Limpa os campos
+- **Sem tabela** e **sem botão de editar**
+
+#### Tela Editar Alunos (apenas edição/exclusão)
+- **Tabela**: Lista todos os alunos do banco SQLite
+- **Botão Carregar** ou **duplo clique**: Carrega dados nos campos
+- **Botão Salvar**: Atualiza o aluno no banco
+- **Botão Excluir**: Remove com confirmação
+- **Sem botão de adicionar**
+
+#### Banco de Dados
+- **SQLite embutido**: arquivo `avaljava01.db` gerado automaticamente
+- Dados persistem entre sessões
+
+#### Tema Escuro
+- Fundo preto, campos cinzas, texto branco
+- Dialogs customizados (`DarkDialog`)
 
 ### Service Management System
 
@@ -172,15 +186,23 @@ java-swing-apps/
 │   ├── Icones/                # Ícones para o sistema de gestão
 │   └── usericon.png           # Ícone de usuário para o login
 ├── avaljava01/
+│   ├── lib/
+│   │   ├── sqlite-jdbc.jar          # Driver JDBC do SQLite
+│   │   ├── slf4j-api.jar            # Dependência de logging
+│   │   └── slf4j-simple.jar         # Implementação de logging
 │   ├── src/
 │   │   ├── controller/
-│   │   │   └── TelaPrincipal.java    # JFrame principal com MenuBar
+│   │   │   └── TelaPrincipal.java   # JFrame principal com JDesktopPane MDI
+│   │   ├── dao/
+│   │   │   ├── DatabaseConnection.java  # Conexão com SQLite
+│   │   │   └── AlunoDAO.java        # Operações CRUD no banco
 │   │   ├── model/
-│   │   │   └── Aluno.java            # Classe modelo (POJO)
+│   │   │   └── Aluno.java           # Classe modelo (POJO)
 │   │   └── view/
-│   │       ├── NovoAlunoFrame.java   # Tela de cadastro com JTable
-│   │       └── DarkDialog.java       # Dialogs customizados
-│   ├── run.sh                        # Script para compilar e executar
+│   │       ├── NovoAlunoFrame.java  # Tela de cadastro (apenas adicionar)
+│   │       ├── EditarAlunoFrame.java # Tela de edição (editar/excluir)
+│   │       └── DarkDialog.java      # Dialogs customizados
+│   ├── run.sh                       # Script para compilar e executar
 │   └── README.md
 ├── calculator/
 │   ├── Main.java              # Calculadora com design rosa pastel
@@ -300,14 +322,14 @@ java-swing-apps/
 3. Ou compile e execute manualmente:
    ```bash
    # Linux/Mac (com flags de compatibilidade Wayland)
-   javac -cp "src/controller:src/model:src/view" src/controller/*.java src/model/*.java src/view/*.java
+   javac -cp "lib/*:src/controller:src/model:src/view:src/dao" src/controller/*.java src/model/*.java src/view/*.java src/dao/*.java
    export _JAVA_AWT_WM_NONREPARENTING=1
    export NO_AT_BRIDGE=1
-   java -Dsun.java2d.opengl=false -Dsun.java2d.xrender=false -cp "src" controller.TelaPrincipal
+   java --enable-native-access=ALL-UNNAMED -Dsun.java2d.opengl=false -Dsun.java2d.xrender=false -cp "lib/*:src" controller.TelaPrincipal
 
    # Windows
-   javac -cp "src/controller;src/model;src/view" src\controller\*.java src\model\*.java src\view\*.java
-   java -cp "src" controller.TelaPrincipal
+   javac -cp "lib\*;src\controller;src\model;src\view;src\dao" src\controller\*.java src\model\*.java src\view\*.java src\dao\*.java
+   java --enable-native-access=ALL-UNNAMED -cp "lib\*;src" controller.TelaPrincipal
    ```
 
 ### Calculator
