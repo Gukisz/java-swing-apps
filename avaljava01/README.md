@@ -28,6 +28,8 @@ avaljava01/
 
 ## Como Executar
 
+### Linux/Mac
+
 ```bash
 cd avaljava01
 
@@ -35,7 +37,19 @@ cd avaljava01
 javac -cp "src/controller:src/model:src/view" src/controller/*.java src/model/*.java src/view/*.java
 
 # Executar
-java -cp ".:src/controller:src/model:src/view" controller.TelaPrincipal
+java -cp "src" controller.TelaPrincipal
+```
+
+### Windows
+
+```cmd
+cd avaljava01
+
+:: Compilar
+javac -cp "src/controller;src/model;src/view" src\controller\*.java src\model\*.java src\view\*.java
+
+:: Executar
+java -cp "src" controller.TelaPrincipal
 ```
 
 ## Tecnologias

@@ -294,11 +294,11 @@ java-swing-apps/
    ```bash
    # Linux/Mac
    javac -cp "src/controller:src/model:src/view" src/controller/*.java src/model/*.java src/view/*.java
-   java -cp ".:src/controller:src/model:src/view" controller.TelaPrincipal
+   java -cp "src" controller.TelaPrincipal
 
    # Windows
    javac -cp "src/controller;src/model;src/view" src\controller\*.java src\model\*.java src\view\*.java
-   java -cp ".;src/controller;src/model;src/view" controller.TelaPrincipal
+   java -cp "src" controller.TelaPrincipal
    ```
 
 ### Calculator
