@@ -53,13 +53,21 @@ public class TelaPrincipal extends JFrame {
         JMenuItem miNovo = createMenuItem("Novo");
         miNovo.addActionListener(e -> abrirFrame(new NovoAlunoFrame()));
         menuArquivo.add(miNovo);
+
+        JMenuItem miEditar = createMenuItem("Editar");
+        miEditar.addActionListener(e -> abrirFrame(new EditarAlunoFrame()));
+        menuArquivo.add(miEditar);
         menuBar.add(menuArquivo);
 
         // Menu Editar
         JMenu menuEditar = createMenu("Editar");
-        JMenuItem miEditarAluno = createMenuItem("Editar Aluno");
-        miEditarAluno.addActionListener(e -> abrirFrame(new EditarAlunoFrame()));
-        menuEditar.add(miEditarAluno);
+        JMenuItem miDesfazer = createMenuItem("Desfazer");
+        miDesfazer.addActionListener(e -> DarkDialog.showInfo(this, "Desfazer", "Função Desfazer em desenvolvimento."));
+        menuEditar.add(miDesfazer);
+
+        JMenuItem miRefazer = createMenuItem("Refazer");
+        miRefazer.addActionListener(e -> DarkDialog.showInfo(this, "Refazer", "Função Refazer em desenvolvimento."));
+        menuEditar.add(miRefazer);
         menuBar.add(menuEditar);
 
         // Menu Exibir
