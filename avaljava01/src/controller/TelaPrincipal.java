@@ -6,30 +6,39 @@ import java.awt.*;
 
 public class TelaPrincipal extends JFrame {
 
+    private JDesktopPane desktopPane;
+
     public TelaPrincipal() {
         setTitle("Avaliação Java Swing 01");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 600);
-        setMinimumSize(new Dimension(600, 400));
+        setSize(900, 650);
+        setMinimumSize(new Dimension(700, 500));
         setLocationRelativeTo(null);
-
-        // Fundo preto para contraste
-        getContentPane().setBackground(Color.BLACK);
 
         initComponents();
     }
 
     private void initComponents() {
-        // Painel principal com fundo preto
-        JPanel contentPane = new JPanel(new BorderLayout());
-        contentPane.setBackground(Color.BLACK);
-        setContentPane(contentPane);
+        // Painel principal com BorderLayout
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBackground(Color.BLACK);
 
-        // Label central
-        JLabel lbl = new JLabel("Sistema de Cadastro de Alunos", SwingConstants.CENTER);
-        lbl.setFont(new Font("SansSerif", Font.BOLD, 28));
-        lbl.setForeground(Color.WHITE);
-        contentPane.add(lbl, BorderLayout.CENTER);
+        // DesktopPane (área de trabalho MDI) com fundo preto
+        desktopPane = new JDesktopPane();
+        desktopPane.setBackground(Color.BLACK);
+        mainPanel.add(desktopPane, BorderLayout.CENTER);
+
+        // Barra de status na parte inferior
+        JPanel statusBar = new JPanel(new BorderLayout());
+        statusBar.setBackground(new Color(30, 30, 30));
+        statusBar.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(100, 100, 100)));
+        JLabel statusLabel = new JLabel(" Pronto");
+        statusLabel.setForeground(Color.WHITE);
+        statusLabel.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        statusBar.add(statusLabel, BorderLayout.WEST);
+        mainPanel.add(statusBar, BorderLayout.SOUTH);
+
+        setContentPane(mainPanel);
 
         // MenuBar
         setJMenuBar(createMenuBar());
@@ -43,7 +52,7 @@ public class TelaPrincipal extends JFrame {
         // Menu Arquivo
         JMenu menuArquivo = createMenu("Arquivo");
         JMenuItem miNovo = createMenuItem("Novo");
-        miNovo.addActionListener(e -> new NovoAlunoFrame().setVisible(true));
+        miNovo.addActionListener(e -> abrirNovoAluno());
         menuArquivo.add(miNovo);
 
         JMenuItem miEditar = createMenuItem("Editar");
@@ -85,6 +94,17 @@ public class TelaPrincipal extends JFrame {
         return menuBar;
     }
 
+    private void abrirNovoAluno() {
+        NovoAlunoFrame frame = new NovoAlunoFrame();
+        desktopPane.add(frame);
+        try {
+            frame.setSelected(true);
+        } catch (java.beans.PropertyVetoException e) {
+            e.printStackTrace();
+        }
+        frame.setVisible(true);
+    }
+
     private JMenu createMenu(String text) {
         JMenu menu = new JMenu(text);
         menu.setBackground(new Color(30, 30, 30));
@@ -104,7 +124,6 @@ public class TelaPrincipal extends JFrame {
 
     public static void main(String[] args) {
         try {
-            // Usa o visual multiplataforma (Metal) para evitar que o tema do sistema force tela branca
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
         } catch (Exception e) {
             e.printStackTrace();

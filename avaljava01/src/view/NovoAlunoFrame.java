@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class NovoAlunoFrame extends JFrame {
+public class NovoAlunoFrame extends JInternalFrame {
 
     private JTextField idField, nomeField, turmaField, emailField;
     private JTable table;
@@ -26,10 +26,13 @@ public class NovoAlunoFrame extends JFrame {
     public NovoAlunoFrame() {
         initComponents();
         setTitle("Novo Aluno");
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(700, 500);
-        setLocationRelativeTo(null);
-        setMinimumSize(new Dimension(600, 400));
+        setClosable(true);
+        setIconifiable(true);
+        setResizable(true);
+        setMaximizable(true);
+        setSize(650, 450);
+        setLocation(30, 30);
+        setMinimumSize(new Dimension(500, 350));
     }
 
     private void initComponents() {
